@@ -23,7 +23,7 @@ router.get('/', function (req, res) {
 // De totale route is /api/categories/:id
 // :id is hier een placeholder. Wat er op de plaats 
 // van :id staat, kun je terugvinden in req.params.id
-router.get('/:id/products', function (req, res) {
+router.get('/:id', function (req, res) {
     // Haal het id uit de url op
     const id = req.params.id;
     // Zoek de categorie in de categories array. Ook
