@@ -12,6 +12,7 @@ app.use(express.json()); // adds the json body to the request object
 
 // ================================================ ROUTES =============
 app.use('/api/categories', require('./routes/categories'));
+app.use('/api/cool', require('./routes/cool'));
 
 // ================================================ START ==============
 const server = app.listen(process.env.PORT || 8080, () => {

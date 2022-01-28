@@ -16,7 +16,7 @@ router.get('/', function (req, res) {
     // Vul de response met data. Deze data moet natuurlijk 
     // uit een database komen. 
     res.json({
-        categories: categories
+        categories: "Jemoeder"
     });
 });
 
