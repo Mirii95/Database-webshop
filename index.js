@@ -13,6 +13,10 @@ app.use(express.json()); // adds the json body to the request object
 // ================================================ ROUTES =============
 app.use('/api/categories', require('./routes/categories'));
 app.use('/api/cool', require('./routes/cool'));
+app.use('/api/countries', require('./routes/countries'));
+// app.use('/api/orders', require('./routes/orders'));
+// app.use('/api/products', require('./routes/products'));
+// app.use('/api/users', require('./routes/orders'));
 
 // ================================================ START ==============
 const server = app.listen(process.env.PORT || 8080, () => {
