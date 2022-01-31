@@ -7,6 +7,22 @@ const app = express();
 // ================================================ SERVE FRONTEND =====
 app.use(express.static('../public'));
 
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+
+const swaggerOptions = {
+    definition: {
+    openapi: '3.0.0',
+    info: {
+        title: 'Mijn Webshop API',
+        version: '1.0.0',
+        description: 'De API-gedeelte van de back-end.'
+    },
+},
+    apis: ['./routes/*.js'],
+};
+    
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
 // ================================================ MIDDLEWARE =========
 app.use(express.json()); // adds the json body to the request object
 
@@ -19,8 +35,13 @@ app.use('/api/countries', require('./routes/countries'));
 // app.use('/api/users', require('./routes/orders'));
 
 // ================================================ START ==============
+// app.use('/documentation', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// app.get("/", (req, res) => {
+//     res.json({ message: "Welkom bij de webshop-api" });
+// });
 const server = app.listen(process.env.PORT || 8080, () => {
     let name = process.env.APP_NAME || 'app';
     let port = server.address().port;
     console.log(`${name} listening on port ${port}`);
-});
+}); 

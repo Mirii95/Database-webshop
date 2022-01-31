@@ -1,11 +1,3 @@
-// • GET api/orders (alle)
-// • GET api/orders/:id (één)
-// • POST api/orders (nieuw)
-// • => body: de nieuwe order met order-items
-// • PATCH api/orders/:id (wijzig één)
-//     • => /:id => van de te wijzigen order
-//     • => body: de kolom/kolommen die je wilt wijzigen
-
 // getOrderDetails()
 // addOrderDetails()
 // updateOrderDetails()
@@ -34,6 +26,14 @@
 //         "customerId": 3
 //     }]
 // }
+
+// • GET api/orders (alle)
+// • GET api/orders/:id (één)
+// • POST api/orders (nieuw)
+// • => body: de nieuwe order met order-items
+// • PATCH api/orders/:id (wijzig één)
+//     • => /:id => van de te wijzigen order
+//     • => body: de kolom/kolommen die je wilt wijzigen
 
 router.post('/', function (req, res) {
     res.json({

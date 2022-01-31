@@ -22,8 +22,71 @@ router.get('/', function (req, res) {
     // Vul de response met data. Deze data moet natuurlijk 
     // uit een database komen. 
     res.json({
-        categories: "Japan"
+        countries: "Japan"
     });
+});
+
+// De totale route is /api/categories/:id
+// :id is hier een placeholder. Wat er op de plaats 
+// van :id staat, kun je terugvinden in req.params.id
+router.get('/:id', function (req, res) {
+    // Haal het id uit de url op
+    const id = req.params.id;
+    // Zoek de categorie in de categories array. Ook
+    // dit moet later uit een database komen
+    const category = categories.find(c => c.id == id);
+    if(category){
+        // Geef als resultaat de gevonden categorie als deze bestaat
+        res.json(category);
+    } else {
+        // Geef een 404 (Not Found) terug als de category niet bestaat
+        res.status(404).json({message: "category does not exist"}); 
+    }
+});
+
+router.post('/', function (req, res) {
+    // Haal het id uit de url op
+    const id = req.params.id;
+    // Zoek de categorie in de categories array. Ook
+    // dit moet later uit een database komen
+    const category = categories.find(c => c.id == id);
+    if(category){
+        // Geef als resultaat de gevonden categorie als deze bestaat
+        res.json(category);
+    } else {
+        // Geef een 404 (Not Found) terug als de category niet bestaat
+        res.status(404).json({message: "category does not exist"}); 
+    }
+});
+
+router.patch('/:id', function (req, res) {
+    // Haal het id uit de url op
+    const id = req.params.id;
+    // Zoek de categorie in de categories array. Ook
+    // dit moet later uit een database komen
+    const category = categories.find(c => c.id == id);
+    if(category){
+        // Geef als resultaat de gevonden categorie als deze bestaat
+        res.json(category);
+    } else {
+        // Geef een 404 (Not Found) terug als de category niet bestaat
+        res.status(404).json({message: "category does not exist"}); 
+    }
+});
+
+router.delete('/:id', function (req, res) {
+    // Haal het id uit de url op
+    const id = req.params.id;
+    // Zoek de categorie in de categories array. Ook
+    // dit moet later uit een database komen
+    const category = categories.find(c => c.id == id);
+    if(category){
+        // Geef als resultaat de gevonden categorie als deze bestaat
+        res.json(category);
+    } else {
+        // Geef een 404 (Not Found) terug als de category niet bestaat
+        res.status(404).json({message: "category does not exist"}); 
+    }
 });
 
 // getCountryDetails()
