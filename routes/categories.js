@@ -1,22 +1,22 @@
 /**
  * @swagger
  * components:
- *  schemas:
- *   Category:
- *    type: object
- *    required:
- *     - id
- *     - name
- *    properties:
- *     id:
- *      type: integer
- *      description: De id van de Category.
- *     name:
- *      type: string
- *      description: De naam van de Category.
+ *  schemas:
+ *   Category:
+ *    type: object
+ *    required:
+ *     - id
+ *     - name
+ *    properties:
+ *     id:
+ *      type: integer
+ *      description: De id van de Category.
+ *     name:
+ *      type: string
+ *      description: De naam van de Category.
  */
 
- const express = require('express');
+const express = require('express');
 
 // • GET api/categories (alle)
 // • GET api/categories/:id/products
@@ -42,27 +42,27 @@ let categories = [
 // De totale route is /api/categories/ (zie index.js)
 // Deze route wordt alleen bij een GET request geactiveerd.
 
-/**
- * @swagger
- * /api/categories:
- *  get:
- *   tags: [Categories]
- *   description: Haalt alle Categories op waaraan een Product gekoppeld kan zijn.
- *   responses:  
- *    200:
- *     description: Json met de Categories.
- *     content:
- *      application/json:
- *       schema:
- *        type:
- *         object
- *        properties:
- *         categories:
- *          type:
- *           array
- *          items:
- *           $ref: '#/components/schemas/Category'
- */  
+ /**
+ * @swagger
+ * /api/categories:
+ *  get:
+ *   tags: [Categories]
+ *   description: Haalt alle Categories op waaraan een Product gekoppeld kan zijn.
+ *   responses:  
+ *    200:
+ *     description: Json met de Categories.
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type:
+ *         object
+ *        properties:
+ *         categories:
+ *          type:
+ *           array
+ *          items:
+ *           $ref: '#/components/schemas/Category'
+ */  
 
 router.get('/', function (req, res) {
     // Vul de response met data. Deze data moet natuurlijk 
@@ -97,26 +97,26 @@ router.get('/:id', function (req, res) {
 // Geef de router aan het bestand die deze module heeft ge-required.
 // Dit bestand is in dit geval index.js
 
-    /**
- * @swagger
- * /api/categories:
- *  post:
- *   tags: [Categories]
- *   description: Maakt een nieuwe Category.
- *   requestBody:
- *    required: true
- *    content:
- *     application/json:
- *      schema:
- *       $ref: '#/components/schemas/Category'
- *   responses:  
- *    200:
- *     description: Json met de gemaakte Category.
- *     content:
- *      application/json:
- *       schema:
- *        $ref: '#/components/schemas/Category'
- */
+/**
+ * @swagger
+ * /api/categories:
+ *  post:
+ *   tags: [Categories]
+ *   description: Maakt een nieuwe Category.
+ *   requestBody:
+ *    required: true
+ *    content:
+ *     application/json:
+ *      schema:
+ *       $ref: '#/components/schemas/Category'
+ *   responses:  
+ *    200:
+ *     description: Json met de gemaakte Category.
+ *     content:
+ *      application/json:
+ *       schema:
+ *        $ref: '#/components/schemas/Category'
+ */
 
 router.post('/', function (req, res) {
     res.status(404).json({message: "category does not exist"}); 
@@ -126,8 +126,37 @@ router.patch('/:id', function (req, res) {
     res.status(404).json({message: "category does not exist"}); 
 });
 
+
+ /** 
+ * @swagger 
+ * /api/categories/:
+ *   delete: 
+ *     description: Create an Employee 
+ *     parameters: 
+ *     - name: EmployeeName 
+ *       description: What to delete
+ *       in: formData 
+ *       required: true 
+ *       type: int 
+ *     responses:  
+ *       200: 
+ *         description: Deleted isch  
+ *       404:
+ *         description: Failed
+ *   
+ */
+
 router.delete('/:id', function (req, res) {
-    res.status(404).json({message: "category does not exist"}); 
+    const id = req.params.id;
+    const category = categories.find(c => c.id == id);
+    if(category){
+        // Geef als resultaat de gevonden categorie als deze bestaat
+        res.json(category);
+    } else {
+        // Geef een 404 (Not Found) terug als de category niet bestaat
+        res.status(404).json({message: "category does not exist"}); 
+    }
+    // res.status(404).json({message: "category does not exist"}); 
 });
 
 module.exports = router;

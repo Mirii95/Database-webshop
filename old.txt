@@ -1,0 +1,60 @@
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *   Category:
+ *    type: object
+ *    required:
+ *     - id
+ *     - name
+ *    properties:
+ *     id:
+ *      type: integer
+ *      description: De id van de Category.
+ *     name:
+ *      type: string
+ *      description: De naam van de Category.
+ */
+
+/**
+ * @swagger
+ * /api/categories:
+ *  post:
+ *   tags: [Categories]
+ *   description: Maakt een nieuwe Category.
+ *   requestBody:
+ *    required: true
+ *    content:
+ *     application/json:
+ *      schema:
+ *       $ref: '#/components/schemas/Category'
+ *   responses:  
+ *    200:
+ *     description: Json met de gemaakte Category.
+ *     content:
+ *      application/json:
+ *       schema:
+ *        $ref: '#/components/schemas/Category'
+ */
+
+ /**
+ * @swagger
+ * /api/categories:
+ *  get:
+ *   tags: [Categories]
+ *   description: Haalt alle Categories op waaraan een Product gekoppeld kan zijn.
+ *   responses:  
+ *    200:
+ *     description: Json met de Categories.
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type:
+ *         object
+ *        properties:
+ *         categories:
+ *          type:
+ *           array
+ *          items:
+ *           $ref: '#/components/schemas/Category'
+ */  

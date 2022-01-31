@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-
+const db = require('./database/database.js')
 // ================================================ CREATION ===========
 const app = express();
 
@@ -40,6 +40,7 @@ app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // app.get("/", (req, res) => {
 //     res.json({ message: "Welkom bij de webshop-api" });
 // });
+db.CREATE_TABLES();
 const server = app.listen(process.env.PORT || 8080, () => {
     let name = process.env.APP_NAME || 'app';
     let port = server.address().port;
