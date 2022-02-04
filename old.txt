@@ -58,3 +58,67 @@
  *          items:
  *           $ref: '#/components/schemas/Category'
  */  
+
+
+
+
+   // db.run('"CREATE TABLE "categories" (' +
+    //     '"categories_id"	INTEGER NOT NULL UNIQUE,' +
+    //     '"categories_name"	TEXT NOT NULL,' +
+    //     '"orders_id"	INTEGER NOT NULL,' +
+    //     'FOREIGN KEY("orders_id") REFERENCES "orders"("orders_id"),' +
+    //     'PRIMARY KEY("categories_id" AUTOINCREMENT));"');
+
+    // db.run('CREATE TABLE "countries" (' +
+    //     '"countries_id"	INTEGER NOT NULL UNIQUE,' +
+    //     '"countries_name"	TEXT NOT NULL,' +
+    //     'PRIMARY KEY("countries_id" AUTOINCREMENT)' +
+    // ');');
+    
+    // db.run('CREATE TABLE "orders" (' +
+    //     '"orders_id"	INTEGER NOT NULL UNIQUE,' +
+    //     '"orders_name"	TEXT NOT NULL,' +
+    //     '"orders_price"	NUMERIC NOT NULL,' +
+    //     '"orders_desc"	TEXT,' +
+    //     '"products_id"	INTEGER NOT NULL,' +
+    //     '"users_id"	INTEGER NOT NULL,' +
+    //     '"countries_id"	INTEGER NOT NULL,' +
+    //     '"categories_id"	INTEGER NOT NULL,' +
+    //     'FOREIGN KEY("products_id") REFERENCES "products"("products_id"),' +
+    //     'FOREIGN KEY("countries_id") REFERENCES "countries"("countries_id"),' +
+    //     'FOREIGN KEY("users_id") REFERENCES "users"("users_id"),' +
+    //     'FOREIGN KEY("categories_id") REFERENCES "categories"("categories_id"),' +
+    //     'PRIMARY KEY("orders_id" AUTOINCREMENT)' +
+    // ');');
+
+    // db.run('CREATE TABLE "products" (' +
+    //     '"products_id"	INTEGER NOT NULL UNIQUE,' +
+    //     '"products_name"	TEXT NOT NULL,' +
+    //     '"products_price"	NUMERIC NOT NULL,' +
+    //     '"products_desc"	TEXT,' +
+    //     '"categories_id"	INTEGER NOT NULL,' +
+    //     'PRIMARY KEY("products_id" AUTOINCREMENT)' +
+    // ');');
+    
+    // db.run('CREATE TABLE "users" (' +
+    //     '"users_id"	INTEGER NOT NULL UNIQUE,' +
+    //     '"users_name"	TEXT NOT NULL,' +
+    //     '"orders_id"	INTEGER NOT NULL,' +
+    //     '"countries_id"	INTEGER NOT NULL,' +
+    //     'FOREIGN KEY("countries_id") REFERENCES "countries"("countries_id"),' +
+    //     'FOREIGN KEY("orders_id") REFERENCES "orders"("orders_id"),' +
+    //     'PRIMARY KEY("users_id" AUTOINCREMENT)' +
+    // ');');
+
+
+
+        // Zoek de categorie in de categories array. Ook
+    // dit moet later uit een database komen
+    const category = categories.find(c => c.id == id);
+    if(category){
+        // Geef als resultaat de gevonden categorie als deze bestaat
+        res.json(category);
+    } else {
+        // Geef een 404 (Not Found) terug als de category niet bestaat
+        res.status(404).json({message: "category does not exist"}); 
+    }

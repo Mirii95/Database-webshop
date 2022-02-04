@@ -17,6 +17,7 @@
  */
 
 const express = require('express');
+const db = require('../database/database.js')
 
 // • GET api/categories (alle)
 // • GET api/categories/:id/products
@@ -67,6 +68,7 @@ let categories = [
 router.get('/', function (req, res) {
     // Vul de response met data. Deze data moet natuurlijk 
     // uit een database komen. 
+    db.Dinges();
     res.json({
         categories: categories
     });
@@ -74,6 +76,22 @@ router.get('/', function (req, res) {
 
 router.get('/:id/products', function (req, res) {
     res.status(404).json({message: "category does not exist"}); 
+    // Haal het id uit de url op
+    const id = req.params.id;
+    let db = database.GetDB();
+    let results = [];
+
+    // [
+        //     { categories_id: 2, categories_name: 'Kimono' },
+        //     { categories_id: 1, categories_name: 'Homongi' },
+        //     { categories_id: 3, categories_name: 'Yukata' }
+        // ]
+
+    db.get("SELECT categories_id, categories_name FROM categories WHERE categories_id=" + id + ";", function(err, rows) {
+        results.push(rows);
+        res.json(results);
+    });
+    db.close();
 });
 
 // De totale route is /api/categories/:id
