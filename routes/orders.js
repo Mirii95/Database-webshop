@@ -1,3 +1,6 @@
+const express = require('express');
+const database = require('../database/database.js')
+const router = express.Router();
 // getOrderDetails()
 // addOrderDetails()
 // updateOrderDetails()
@@ -14,17 +17,19 @@
  *     - orders_name
  *     - orders_price
  *     - orders_desc
- *     - products_id
- *     - users_id
- *     - countries_id
- *     - categories_id
  *    properties:
  *     orders_id:
  *      type: integer
  *      description: De id van de Order.
- *     countries_name:
+ *     orders_name:
  *      type: string
  *      description: De naam van de Order.
+ *     orders_price:
+ *      type: number
+ *      description: De prijs van de Order.
+ *     orders_desc:
+ *      type: string
+ *      description: De beschrijving van de Order.
  */
 
 // {
@@ -51,14 +56,6 @@
 //     }]
 // }
 
-// • GET api/orders (alle)
-// • GET api/orders/:id (één)
-// • POST api/orders (nieuw)
-// • => body: de nieuwe order met order-items
-// • PATCH api/orders/:id (wijzig één)
-//     • => /:id => van de te wijzigen order
-//     • => body: de kolom/kolommen die je wilt wijzigen
-
 router.get('/', function (req, res) {
   res.json({
     id: req.body.id,
@@ -66,15 +63,32 @@ router.get('/', function (req, res) {
   });
 });
 
+/**
+ * @swagger
+ * /api/orders:
+ *  get:
+ *   tags: [Orders]
+ *   description: Haalt alle Orders op waaraan een Product gekoppeld kan zijn.
+ *   responses:  
+ *    200:
+ *     description: Json met de Orders.
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type:
+ *         object
+ *        properties:
+ *         categories:
+ *          type:
+ *           array
+ *          items:
+ *           $ref: '#/components/schemas/Orders'
+ */ 
+
 router.get('/:id', function (req, res) {
   res.json({
     id: req.body.id,
     name: req.body.name,
-    // [
-        //     { orders_id: 1, orders_name: 'Kimono Groen' },
-        //     { orders_id: 2, orders_name: 'Homongi Blauw' },
-        //     { orders_id: 3, orders_name: 'Yukata Paars' }
-        // ]
   });
 
   res.status(404).json({message: "category does not exist"}); 
@@ -99,7 +113,7 @@ router.post('/', function (req, res) {
     });
   });
 
-  router.patch('/', function (req, res) {
+  router.patch('/:id', function (req, res) {
     res.json({
       id: req.body.id,
       name: req.body.name,

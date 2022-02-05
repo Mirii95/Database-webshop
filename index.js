@@ -34,7 +34,7 @@ app.use('/api/categories', require('./routes/categories'));
 app.use('/api/cool', require('./routes/cool'));
 app.use('/api/countries', require('./routes/countries'));
 // app.use('/api/orders', require('./routes/orders'));
-// app.use('/api/products', require('./routes/products'));
+app.use('/api/products', require('./routes/products'));
 // app.use('/api/users', require('./routes/orders'));
 
 // ================================================ START ==============

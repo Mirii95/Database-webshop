@@ -122,3 +122,44 @@
         // Geef een 404 (Not Found) terug als de category niet bestaat
         res.status(404).json({message: "category does not exist"}); 
     }
+
+
+/**
+* @swagger
+* /api/products/{id}:
+*  get:
+*   tags: [Products]
+*   description: Haalt alle Products op waaraan een Product gekoppeld kan zijn.
+*   parameters:
+*    - in: path
+*      name: id
+*      schema:
+*       type: integer
+*      required: true
+*      description: products_id
+*   responses:  
+*    200:
+*     description: Json met de Products. 
+*     content:
+*      application/json:
+*       schema:
+*        type:
+*         object
+*        properties:
+*         categories:
+*          type:
+*           array
+*          items:
+*           $ref: '#/components/schemas/Products'
+*/ 
+
+
+
+ *   parameters:
+ *    - in: body
+ *      name: name
+ *      type: string
+ *      required: true
+ *      description: countries_name
+ *      schema:
+ *       $ref: '#/components/schemas/Countries'

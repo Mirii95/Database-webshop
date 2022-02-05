@@ -1,60 +1,127 @@
-// GET api/products (alle)
-// • GET api/products/:id (één)
-// • POST api/products (nieuw)
-    //• => body: het nieuwe product
-// • PATCH api/products/:id (wijzig één)
-    //• => /:id => van het te wijzigen product
-    //• => body: de kolom/kolommen die je
-//              wilt wijzigen
-// • DELETE api/products/:id (verwijder éen)́
+const express = require("express");
+const database = require("../database/database.js");
+const router = express.Router();
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *   Products:
+ *    type: object
+ *    required:
+ *     - products_id
+ *     - products_name
+ *    properties:
+ *     products_id:
+ *      type: integer
+ *      description: De id van de Product.
+ *     products_name:
+ *      type: string
+ *      description: De naam van de Product.
+ */
 
-// getProductDetails()
-// addProductDetails()
-// updateProductDetails()
-// deleteProductDetails()
+/**
+ * @swagger
+ * /api/products:
+ *  get:
+ *   tags: [Products]
+ *   description: Haalt alle Products op waaraan een Product gekoppeld kan zijn.
+ *   responses:
+ *    200:
+ *     description: Json met de Products.
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type:
+ *         object
+ *        properties:
+ *         categories:
+ *          type:
+ *           array
+ *          items:
+ *           $ref: '#/components/schemas/Products'
+ */
 
-// {
-//     "status" = "succes",
-//     "total_results" = 3,
-//     "products" [{
-//         "id": 1,
-//         "name": "Kimono"
-//     }, {
-//         "id": 2,
-//         "name": "Obi"
-//     }, {
-//         "id": 3,
-//         "name": "Haori"
-//     }]
-// }
-
-router.get('/:id', function (req, res) {
-  // Haal het id uit de url op
+router.get("/", function (req, res) {
   const id = req.params.id;
   let db = database.GetDB();
   let results = [];
 
-  // [
-        //     { products_id: 1, products_name: 'Kimono Groen' },
-        //     { products_id: 2, products_name: 'Homongi Blauw' },
-        //     { products_id: 3, products_name: 'Yukata Paars' }
-        // ]
-
-  db.get("SELECT products_id, products_name FROM products WHERE products_id=" + id + ";", function(err, rows) {
+  db.all(
+    "SELECT products_id, products_name FROM products",
+    function (err, rows) {
       results.push(rows);
       res.json(results);
-  });
-    
+    }
+  );
+
   db.close();
 });
 
-router.post('/', function (req, res) {
-    res.json({
-      id: req.body.id,
-      name: req.body.name,
-    });
+/**
+ * @swagger
+ * /api/products/{id}:
+ *  get:
+ *   tags: [Products]
+ *   description: Haalt alle Products op waaraan een Product gekoppeld kan zijn.
+ *   parameters:
+ *    - in: path
+ *      name: id
+ *      schema:
+ *       type: integer
+ *      required: true
+ *      description: products_id
+ *   responses:
+ *    200:
+ *     description: Json met de Products.
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type:
+ *         object
+ *        properties:
+ *         categories:
+ *          type:
+ *           array
+ *          items:
+ *           $ref: '#/components/schemas/Products'
+ */
+router.get("/:id", function (req, res) {
+  const id = req.params.id;
+  let db = database.GetDB();
+  let results = [];
+
+  db.get(
+    "SELECT products_id, products_name FROM products WHERE products_id=" +
+      id +
+      ";",
+    function (err, rows) {
+      results.push(rows);
+      res.json(results);
+    }
+  );
+
+  db.close();
+});
+
+router.post("/", function (req, res) {
+  res.json({
+    id: req.body.id,
+    name: req.body.name,
   });
+});
 
+router.patch("/:id", function (req, res) {
+  res.json({
+    id: req.body.id,
+    name: req.body.name,
+  });
+});
 
+router.delete("/:id", function (req, res) {
+  res.json({
+    id: req.body.id,
+    name: req.body.name,
+  });
+});
 
-  module.exports = router;
+module.exports = router;

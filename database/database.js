@@ -104,11 +104,11 @@ function CREATE_TABLES() {
         db.run(TABLE_FIVE);
 
         // Insert data CATEGORIES
-        db.run("INSERT INTO categories (categories_name, orders_id" +
+        db.run("INSERT INTO categories (categories_name, orders_id)" +
         "VALUES ('Kimono', 0);");
-        db.run("INSERT INTO categories (categories_name, orders_id" +
+        db.run("INSERT INTO categories (categories_name, orders_id)" +
         "VALUES ('Homongi', 0);");
-        db.run("INSERT INTO categories (categories_name, orders_id" +
+        db.run("INSERT INTO categories (categories_name, orders_id)" +
         "VALUES ('Yukata', 0);");
 
         // Insert data COUNTRIES
@@ -164,10 +164,17 @@ function CREATE_TABLES() {
     // VALUES (countries_id, countries_name);
 }
 
-// function DELETE_TABLES() {
-//     let db = GetDB();
-//     db.close();
-// }
+function DELETE_TABLES() {
+    let db = GetDB();
+
+    db.run('DROP TABLE IF EXISTS "categories";');
+    db.run('DROP TABLE IF EXISTS "countries";');
+    db.run('DROP TABLE IF EXISTS "orders";');
+    db.run('DROP TABLE IF EXISTS "products";');
+    db.run('DROP TABLE IF EXISTS "users";');
+
+    db.close();
+}
 
 // db.serialize(function() {
 //   db.run("CREATE TABLE lorem (info TEXT)");
@@ -185,5 +192,5 @@ function CREATE_TABLES() {
 
 // module.exports.Dinges = TEST;
 module.exports.CREATE_TABLES = CREATE_TABLES;
-// module.exports.DELETE_TABLES = DELETE_TABLES;
+module.exports.DELETE_TABLES = DELETE_TABLES;
 module.exports.GetDB = GetDB;

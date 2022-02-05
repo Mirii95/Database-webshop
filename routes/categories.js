@@ -1,3 +1,6 @@
+const express = require("express");
+const database = require("../database/database.js");
+const router = express.Router();
 /**
  * @swagger
  * components:
@@ -16,40 +19,13 @@
  *      description: De naam van de Category.
  */
 
-const express = require('express');
-const db = require('../database/database.js')
-
-// • GET api/categories (alle)
-// • GET api/categories/:id/products
-// • GET api/categories/:id (één)
-
-// • POST api/categories (nieuw)
-//     • => body: de nieuwe category
-// • PATCH api/categories/:id (wijzig één)
-//     • => /:id => van de te wijzigen category
-//     • => body: de kolom/kolommen die je wilt wijzigen
-// • DELETE api/categories/:id (verwijder één)
-
-// Maak een nieuwe router aan
-const router = express.Router();
-
-let categories = [
-    { id: 1, name: "Dit zijn" },
-    { id: 2, name: "geen echte" },
-    { id: 3, name: "categorieën" },
-    { id: 4, name: "zie routes/categories.js" }
-];
-
-// De totale route is /api/categories/ (zie index.js)
-// Deze route wordt alleen bij een GET request geactiveerd.
-
- /**
+/**
  * @swagger
  * /api/categories:
  *  get:
- *   tags: [Categories]
+ *   tags: [Category]
  *   description: Haalt alle Categories op waaraan een Product gekoppeld kan zijn.
- *   responses:  
+ *   responses:
  *    200:
  *     description: Json met de Categories.
  *     content:
@@ -63,53 +39,49 @@ let categories = [
  *           array
  *          items:
  *           $ref: '#/components/schemas/Category'
- */  
+ */
 
-router.get('/', function (req, res) {
-    // Vul de response met data. Deze data moet natuurlijk 
-    // uit een database komen. 
-    db.Dinges();
-    res.json({
-        categories: categories
-    });
+// GET ALLES
+router.get("/", function (req, res) {
+//   db.Dinges();
+  res.json({
+    categories: categories,
+    
+  });
 });
 
-router.get('/:id/products', function (req, res) {
-    res.status(404).json({message: "category does not exist"}); 
-    // Haal het id uit de url op
-    const id = req.params.id;
-    let db = database.GetDB();
-    let results = [];
+// GET :ID
+router.get("/:id/products", function (req, res) {
+  res.status(404).json({ message: "category does not exist" });
 
-    // [
-        //     { categories_id: 2, categories_name: 'Kimono' },
-        //     { categories_id: 1, categories_name: 'Homongi' },
-        //     { categories_id: 3, categories_name: 'Yukata' }
-        // ]
+  const id = req.params.id;
+  let db = database.GetDB();
+  let results = [];
 
-    db.get("SELECT categories_id, categories_name FROM categories WHERE categories_id=" + id + ";", function(err, rows) {
-        results.push(rows);
-        res.json(results);
-    });
-    db.close();
-});
-
-// De totale route is /api/categories/:id
-// :id is hier een placeholder. Wat er op de plaats 
-// van :id staat, kun je terugvinden in req.params.id
-router.get('/:id', function (req, res) {
-    // Haal het id uit de url op
-    const id = req.params.id;
-    // Zoek de categorie in de categories array. Ook
-    // dit moet later uit een database komen
-    const category = categories.find(c => c.id == id);
-    if(category){
-        // Geef als resultaat de gevonden categorie als deze bestaat
-        res.json(category);
-    } else {
-        // Geef een 404 (Not Found) terug als de category niet bestaat
-        res.status(404).json({message: "category does not exist"}); 
+  db.get(
+    "SELECT categories_id, categories_name FROM categories WHERE categories_id=" +
+      id +
+      ";",
+    function (err, rows) {
+      results.push(rows);
+      res.json(results);
     }
+  );
+  db.close();
+});
+
+router.get("/:id", function (req, res) {
+  const id = req.params.id;
+  // Zoek de categorie in de categories array. Ook
+  // dit moet later uit een database komen
+  const category = categories.find((c) => c.id == id);
+  if (category) {
+    // Geef als resultaat de gevonden categorie als deze bestaat
+    res.json(category);
+  } else {
+    // Geef een 404 (Not Found) terug als de category niet bestaat
+    res.status(404).json({ message: "category does not exist" });
+  }
 });
 
 // Geef de router aan het bestand die deze module heeft ge-required.
@@ -127,7 +99,7 @@ router.get('/:id', function (req, res) {
  *     application/json:
  *      schema:
  *       $ref: '#/components/schemas/Category'
- *   responses:  
+ *   responses:
  *    200:
  *     description: Json met de gemaakte Category.
  *     content:
@@ -136,45 +108,44 @@ router.get('/:id', function (req, res) {
  *        $ref: '#/components/schemas/Category'
  */
 
-router.post('/', function (req, res) {
-    res.status(404).json({message: "category does not exist"}); 
+router.post("/", function (req, res) {
+  res.status(404).json({ message: "category does not exist" });
 });
 
-router.patch('/:id', function (req, res) {
-    res.status(404).json({message: "category does not exist"}); 
+router.patch("/:id", function (req, res) {
+  res.status(404).json({ message: "category does not exist" });
 });
 
-
- /** 
- * @swagger 
+/**
+ * @swagger
  * /api/categories/:
- *   delete: 
- *     description: Create an Employee 
- *     parameters: 
- *     - name: EmployeeName 
+ *   delete:
+ *     description: Create an Employee
+ *     parameters:
+ *     - name: EmployeeName
  *       description: What to delete
- *       in: formData 
- *       required: true 
- *       type: int 
- *     responses:  
- *       200: 
- *         description: Deleted isch  
+ *       in: formData
+ *       required: true
+ *       type: int
+ *     responses:
+ *       200:
+ *         description: Deleted isch
  *       404:
  *         description: Failed
- *   
+ *
  */
 
-router.delete('/:id', function (req, res) {
-    const id = req.params.id;
-    const category = categories.find(c => c.id == id);
-    if(category){
-        // Geef als resultaat de gevonden categorie als deze bestaat
-        res.json(category);
-    } else {
-        // Geef een 404 (Not Found) terug als de category niet bestaat
-        res.status(404).json({message: "category does not exist"}); 
-    }
-    // res.status(404).json({message: "category does not exist"}); 
+router.delete("/:id", function (req, res) {
+  const id = req.params.id;
+  const category = categories.find((c) => c.id == id);
+  if (category) {
+    // Geef als resultaat de gevonden categorie als deze bestaat
+    res.json(category);
+  } else {
+    // Geef een 404 (Not Found) terug als de category niet bestaat
+    res.status(404).json({ message: "category does not exist" });
+  }
+  // res.status(404).json({message: "category does not exist"});
 });
 
 module.exports = router;

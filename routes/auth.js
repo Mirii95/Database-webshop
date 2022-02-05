@@ -1,3 +1,6 @@
+const express = require('express');
+const database = require('../database/database.js')
+const router = express.Router();
 // • POST api/auth (token) • body: username of user_id
 // Middleware
 // • Toepassen op alle U en A in de rekenhulp
@@ -12,4 +15,4 @@
 //     "message": "succes"
 // }
 
-module.exports = router;
+// module.exports = router;
