@@ -54,7 +54,7 @@ router.get('/', function (req, res) {
   let db = database.GetDB();
   let results = [];
   db.all(
-    "SELECT orders_id, orders_name FROM Orders",
+    "SELECT orders_id, orders_name, orders_price, orders_desc FROM Orders",
     function (err, rows) {
       results.push(rows);
       res.json(results);
@@ -98,7 +98,7 @@ router.get('/:id', function (req, res) {
   let db = database.GetDB();
   let results = [];
 
-  db.get("SELECT orders_id, orders_name FROM Orders WHERE orders_id=" + id + ";", function(err, rows) {
+  db.get("SELECT orders_id, orders_name, orders_price, orders_desc FROM Orders WHERE orders_id=" + id + ";", function(err, rows) {
     results.push(rows);
     res.json(results);
   });
