@@ -56,6 +56,49 @@ router.get("/", function (req, res) {
 
 /**
  * @swagger
+ * /api/categories/{id}/products:
+ *  get:
+ *   tags: [Category]
+ *   description: Haalt 1 Category op waaraan een Product gekoppeld kan zijn.
+ *   parameters:
+ *    - in: path
+ *      name: id
+ *      schema:
+ *       type: integer
+ *      required: true
+ *      description: Categories van de webshop.
+ *   responses:
+ *    200:
+ *     description: Json met de Categories.
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type:
+ *         object
+ *        properties:
+ *         categories:
+ *          type:
+ *           array
+ *          items:
+ *           $ref: '#/components/schemas/Products'
+ */
+
+// GET ID FROM PRODUCTS
+router.get("/:id/products", function (req, res) {
+    const id = req.params.id;
+    let db = database.GetDB();
+    let results = [];
+  db.all(
+      "SELECT * FROM Products WHERE categories_id=" + id + ";",
+      function (err, rows) {
+          results.push(rows);
+          res.json(results);
+  });
+  db.close();
+});
+
+/**
+ * @swagger
  * /api/categories/{id}:
  *  get:
  *   tags: [Category]
@@ -83,7 +126,7 @@ router.get("/", function (req, res) {
  *           $ref: '#/components/schemas/Category'
  */
 
-// GET :ID/PRODUCTS
+// GET :ID
 router.get("/:id", function (req, res) {
   const id = req.params.id;
   let db = database.GetDB();

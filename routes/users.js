@@ -97,6 +97,48 @@ router.get('/:id', function (req, res) {
   db.close();
 });
 
+/**
+ * @swagger
+ * /api/users/{id}/orders:
+ *  get:
+ *   tags: [Users]
+ *   description: Haalt 1 User op waaraan een Product gekoppeld kan zijn.
+ *   parameters:
+ *    - in: path
+ *      name: id
+ *      schema:
+ *       type: integer
+ *      required: true
+ *      description: users van de webshop.
+ *   responses:
+ *    200:
+ *     description: Json met de users.
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type:
+ *         object
+ *        properties:
+ *         categories:
+ *          type:
+ *           array
+ *          items:
+ *           $ref: '#/components/schemas/Orders'
+ */
+
+router.get("/:id/orders", function (req, res) {
+  const id = req.params.id;
+  let db = database.GetDB();
+  let results = [];
+db.all(
+    "SELECT * FROM Orders WHERE users_id=" + id + ";",
+    function (err, rows) {
+        results.push(rows);
+        res.json(results);
+});
+db.close();
+});
+
 //GET :ID/ORDERS
 router.get('/:id/orders', function (req, res) {
   // const id = req.params.id;

@@ -128,7 +128,7 @@ function CREATE_TABLES() {
         db.run("INSERT INTO products (products_name, products_price, products_desc, categories_id)" +
         "VALUES ('Kimono Groen', '600', 'Een groene kimono', 0);");
         db.run("INSERT INTO products (products_name, products_price, products_desc, categories_id)" +
-        "VALUES ('Homongi Blauw', '550', 'Een blauwe homongi', 0);");
+        "VALUES ('Homongi Blauw', '550', 'Een blauwe homongi', 1);");
         db.run("INSERT INTO products (products_name, products_price, products_desc, categories_id)" +
         "VALUES ('Yukata Paars', '750', 'Een paarse yukata', 0);");
 
