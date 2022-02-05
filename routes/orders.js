@@ -134,7 +134,7 @@ router.post('/', function (req, res) {
   let db = database.GetDB();
 
   db.run("INSERT INTO Orders (orders_name, orders_price, orders_desc, products_id, users_id, countries_id, categories_id)" +
-  "VALUES ('" + NewName + "'," + NewPrice + ",'" + NewDesc + "' 0, 0, 0, 0));");
+  "VALUES ('" + NewName + "'," + NewPrice + ",'" + NewDesc + "', 0, 0, 0, 0);");
 
   res.status(200).json({ message: "You try to add: " + NewName + NewPrice + NewDesc });
   db.close();

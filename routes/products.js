@@ -10,6 +10,8 @@ const router = express.Router();
  *    required:
  *     - products_id
  *     - products_name
+ *     - products_price
+ *     - products_desc
  *    properties:
  *     products_id:
  *      type: integer
@@ -17,6 +19,12 @@ const router = express.Router();
  *     products_name:
  *      type: string
  *      description: De naam van de Product.
+ *     products_price:
+ *      type: number
+ *      description: De prijs van de Product.
+ *     products_desc:
+ *      type: string
+ *      description: De beschrijving van de Product.
  */
 
 /**
@@ -126,13 +134,35 @@ router.get("/:id", function (req, res) {
 
 router.post("/", function (req, res) {
   const NewName = req.body.products_name;
+  const NewPrice = req.body.products_price;
+  const NewDesc = req.body.products_desc;
+
+
+  if (!NewName) {
+    res.status(400).json({ message: "products_name was null or empty"});
+    return;
+  }
+  if (!NewPrice && NewPrice != 0) {
+    res.status(400).json({ message: "products_price was null or empty"});
+    return;
+  }
+  if (!NewDesc) {
+    res.status(400).json({ message: "products_desc was null or empty"});
+    return;
+  }
+
   let db = database.GetDB();
 
-  db.run("INSERT INTO Products (products_name) VALUES ('" + NewName + "');");
-
-  res.status(404).json({ message: "You try to add: " + NewName });
+  db.run("INSERT INTO Products (products_name, products_price, products_desc, categories_id)" +
+  "VALUES ('" + NewName + "', " + NewPrice + ", '" + NewDesc + "' ,0);");
+  
   db.close();
+  res.status(200).json({ message: "You try to add: " + NewName });
+
 });
+
+
+
 
 /**
  * @swagger
