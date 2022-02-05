@@ -1,10 +1,6 @@
 const express = require('express');
 const database = require('../database/database.js')
 const router = express.Router();
-// getOrderDetails()
-// addOrderDetails()
-// updateOrderDetails()
-// deleteOrderDetails()
 
 /**
  * @swagger
@@ -32,44 +28,13 @@ const router = express.Router();
  *      description: De beschrijving van de Order.
  */
 
-// {
-//     "status" = "succes",
-//     "total_results" = 3,
-//     "orders" [{
-//         "id": 1,
-//         "name": "kimonoRood",
-//         "title": "rode rozen kimono",
-//         "country": "Japan",
-//         "customerId": 1
-//     }, {
-//         "id": 2,
-//         "name": "kimonoBlauw",
-//         "title": "sterren kimono",
-//         "country": "Korea",
-//         "customerId": 2
-//     }, {
-//         "id": 3,
-//         "name": "kimonoWit",
-//         "title": "sneeuw kimono",
-//         "country": "Thailand",
-//         "customerId": 3
-//     }]
-// }
-
-router.get('/', function (req, res) {
-  res.json({
-    id: req.body.id,
-    name: req.body.name,
-  });
-});
-
 /**
  * @swagger
  * /api/orders:
  *  get:
  *   tags: [Orders]
  *   description: Haalt alle Orders op waaraan een Product gekoppeld kan zijn.
- *   responses:  
+ *   responses:
  *    200:
  *     description: Json met de Orders.
  *     content:
@@ -83,41 +48,138 @@ router.get('/', function (req, res) {
  *           array
  *          items:
  *           $ref: '#/components/schemas/Orders'
- */ 
+ */
+
+router.get('/', function (req, res) {
+  let db = database.GetDB();
+  let results = [];
+  db.all(
+    "SELECT orders_id, orders_name FROM Orders",
+    function (err, rows) {
+      results.push(rows);
+      res.json(results);
+      console.log(results);
+    }
+  );
+  db.close();
+});
+
+/**
+ * @swagger
+ * /api/orders/{id}:
+ *  get:
+ *   tags: [Orders]
+ *   description: Haalt 1 Order op waaraan een Product gekoppeld kan zijn.
+ *   parameters:
+ *    - in: path
+ *      name: id
+ *      schema:
+ *       type: integer
+ *      required: true
+ *      description: orders_id
+ *   responses:
+ *    200:
+ *     description: Json met de orders.
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type:
+ *         object
+ *        properties:
+ *         categories:
+ *          type:
+ *           array
+ *          items:
+ *           $ref: '#/components/schemas/Orders'
+ */
 
 router.get('/:id', function (req, res) {
-  res.json({
-    id: req.body.id,
-    name: req.body.name,
-  });
-
-  res.status(404).json({message: "category does not exist"}); 
-  // Haal het id uit de url op
   const id = req.params.id;
   let db = database.GetDB();
   let results = [];
 
-  db.get("SELECT orders_id, orders_name FROM orders WHERE orders_id=" + id + ";", function(err, rows) {
+  db.get("SELECT orders_id, orders_name FROM Orders WHERE orders_id=" + id + ";", function(err, rows) {
     results.push(rows);
     res.json(results);
   });
 
   db.close();
-
 });
 
+/**
+ * @swagger
+ * /api/orders:
+ *  post:
+ *   tags: [Orders]
+ *   description: Gegevens naar een server verzenden om een bron aan te maken of bij te werken.
+ *   requestBody:
+ *    required: true
+ *    content:
+ *     application/json:
+ *      schema:
+ *       $ref: '#/components/schemas/Orders'
+ *        
+ *   responses:
+ *    200:
+ *     description: Json met de orders.
+ *     content:
+ *      application/json:
+ *       schema:
+ *        $ref: '#/components/schemas/Orders'
+ */
 router.post('/', function (req, res) {
-    res.json({
-      id: req.body.id,
-      name: req.body.name,
-    });
+  const NewName = req.body.orders_name;
+  const NewPrice = req.body.orders_price;
+  const NewDesc = req.body.orders_desc;
+  let db = database.GetDB();
+
+  db.run("INSERT INTO Orders (orders_name, orders_price, orders_desc, products_id, users_id, countries_id, categories_id)" +
+  "VALUES ('" + NewName + "'," + NewPrice + ",'" + NewDesc + "' 0, 0, 0, 0));");
+
+  res.status(200).json({ message: "You try to add: " + NewName + NewPrice + NewDesc });
+  db.close();
   });
 
+  /**
+ * @swagger
+ * /api/orders/{id}:
+ *  patch:
+ *   tags: [Orders]
+ *   description: Om bestaande rijen in een tabel bij te werken.
+ *   parameters:
+ *    - in: path
+ *      name: id
+ *      schema:
+ *       type: integer
+ *      required: true
+ *      description: orders_id
+ *   requestBody:
+ *    required: true
+ *    content:
+ *     application/json:
+ *      schema:
+ *       $ref: '#/components/schemas/Orders'
+ *        
+ *   responses:
+ *    200:
+ *     description: Json met de Orders.
+ *     content:
+ *      application/json:
+ *       schema:
+ *        $ref: '#/components/schemas/Orders'
+ */
+
   router.patch('/:id', function (req, res) {
-    res.json({
-      id: req.body.id,
-      name: req.body.name,
-    });
+    const NewName = req.body.orders_name;
+    const NewPrice = req.body.orders_price;
+    const NewDesc = req.body.orders_desc;
+    const id = req.params.id;
+    // res.status(404).json({ message: "category does not exist" + NewName + " " + id });
+  
+    let db = database.GetDB();
+    db.run("UPDATE Orders SET orders_name = '" + NewName + "' WHERE orders_id = " + id + ";");
+    res.status(200).json({ message: "Changed!" });
+    db.close();
   });
 
   module.exports = router;

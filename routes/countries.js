@@ -20,13 +20,6 @@ const router = express.Router();
  *      description: De naam van de Country.
  */
 
-let categories = [
-  { id: 1, name: "Dit zijn" },
-  { id: 2, name: "geen echte" },
-  { id: 3, name: "categorieën" },
-  { id: 4, name: "zie routes/categories.js" },
-];
-
 /**
  * @swagger
  * /api/countries:
@@ -68,7 +61,7 @@ router.get("/", function (req, res) {
  * /api/countries/{id}:
  *  get:
  *   tags: [Countries]
- *   description: Haalt alle Countries op waaraan een Product gekoppeld kan zijn.
+ *   description: Haalt 1 Country op waaraan een Product gekoppeld kan zijn.
  *   parameters:
  *    - in: path
  *      name: id
@@ -176,35 +169,43 @@ router.post("/", function (req, res) {
 
 // PATCH
 router.patch("/:id", function (req, res) {
-  const NewName = req.body.name;
+  const NewName = req.body.countries_name;
   const id = req.params.id;
-  res.status(404).json({ message: "category does not exist" + NewName });
+  // res.status(404).json({ message: "category does not exist" + NewName + " " + id });
 
   let db = database.GetDB();
-  let results = [];
-
-  // db.get("SELECT countries_id, countries_name FROM countries WHERE countries_id=" + id + ";", function(err, rows) {
-  //     results.push(rows);
-  //     res.json(results);
-  // });
-
+  db.run("UPDATE Countries SET countries_name = '" + NewName + "' WHERE countries_id = " + id + ";");
+  res.status(200).json({ message: "Changed!" });
   db.close();
 });
 
+/**
+ * @swagger
+ * /api/countries/{id}:
+ *  delete:
+ *   tags: [Countries]
+ *   description: Verwijdert gegevens uit een tabel.
+ *   parameters:
+ *    - in: path
+ *      name: id
+ *      schema:
+ *       type: integer
+ *      required: true
+ *      description: countries_id
+ *        
+ *   responses:
+ *    200:
+ *     description: Succesvol verwijdert.
+ */
+
 // DELETE
 router.delete("/:id", function (req, res) {
-  // Haal het id uit de url op
   const id = req.params.id;
+  db = database.GetDB();
 
-  // let db = database.GetDB();
-  // let results = [];
-
-  // db.get("SELECT countries_id, countries_name FROM countries WHERE countries_id=" + id + ";", function(err, rows) {
-  //     results.push(rows);
-  //     res.json(results);
-  // });
-
-  // db.close();
+  db.run("DELETE FROM Countries WHERE countries_id = " + id + ";");
+  res.status(200).json({ message: "Deleted!" });
+  db.close();
 });
 
 module.exports = router;
