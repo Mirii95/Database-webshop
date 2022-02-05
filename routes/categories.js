@@ -207,6 +207,11 @@ router.patch("/:id", function (req, res) {
   const id = req.params.id;
   let db = database.GetDB();
 
+  if (!NewName) {
+    res.status(400).json({ message: "products_name was null or empty"});
+    return;
+  }
+  
   db.run("UPDATE Categories SET categories_name = '" + NewName + "' WHERE categories_id = " + id + ";");
   res.status(200).json({ message: "Changed!" });
   db.close();

@@ -198,6 +198,11 @@ router.patch("/:id", function (req, res) {
   const id = req.params.id;
   // res.status(404).json({ message: "category does not exist" + NewName + " " + id });
 
+  if (!NewName) {
+    res.status(400).json({ message: "products_name was null or empty"});
+    return;
+  }
+
   let db = database.GetDB();
   db.run("UPDATE Products SET products_name = '" + NewName + "' WHERE products_id = " + id + ";");
   res.status(200).json({ message: "Changed!" });

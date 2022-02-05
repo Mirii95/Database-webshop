@@ -178,6 +178,11 @@ router.post('/', function (req, res) {
   const NewName = req.body.users_name;
   let db = database.GetDB();
 
+  if (!NewName) {
+    res.status(400).json({ message: "products_name was null or empty"});
+    return;
+  }
+
   db.run("INSERT INTO Users (users_name, orders_id, countries_id) VALUES ('" + NewName + "', 0, 0);");
 
   res.status(404).json({ message: "You try to add: " + NewName });
@@ -220,6 +225,11 @@ router.patch("/:id", function (req, res) {
   const NewName = req.body.users_name;
   const id = req.params.id;
   // res.status(404).json({ message: "category does not exist" + NewName + " " + id });
+
+  if (!NewName) {
+    res.status(400).json({ message: "products_name was null or empty"});
+    return;
+  }
 
   let db = database.GetDB();
   db.run("UPDATE Users SET users_name = '" + NewName + "' WHERE users_id = " + id + ";");

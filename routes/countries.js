@@ -132,6 +132,11 @@ router.post("/", function (req, res) {
   const NewName = req.body.countries_name;
   let db = database.GetDB();
 
+  if (!NewName) {
+    res.status(400).json({ message: "products_name was null or empty"});
+    return;
+  }
+
   db.run("INSERT INTO countries (countries_name) VALUES ('" + NewName + "');");
 
   res.status(404).json({ message: "You try to add: " + NewName });
@@ -172,6 +177,11 @@ router.patch("/:id", function (req, res) {
   const NewName = req.body.countries_name;
   const id = req.params.id;
   // res.status(404).json({ message: "category does not exist" + NewName + " " + id });
+
+  if (!NewName) {
+    res.status(400).json({ message: "products_name was null or empty"});
+    return;
+  }
 
   let db = database.GetDB();
   db.run("UPDATE Countries SET countries_name = '" + NewName + "' WHERE countries_id = " + id + ";");

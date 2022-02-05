@@ -133,6 +133,19 @@ router.post('/', function (req, res) {
   const NewDesc = req.body.orders_desc;
   let db = database.GetDB();
 
+  if (!NewName) {
+    res.status(400).json({ message: "products_name was null or empty"});
+    return;
+  }
+  if (!NewPrice && NewPrice != 0) {
+    res.status(400).json({ message: "products_price was null or empty"});
+    return;
+  }
+  if (!NewDesc) {
+    res.status(400).json({ message: "products_desc was null or empty"});
+    return;
+  }
+
   db.run("INSERT INTO Orders (orders_name, orders_price, orders_desc, products_id, users_id, countries_id, categories_id)" +
   "VALUES ('" + NewName + "'," + NewPrice + ",'" + NewDesc + "', 0, 0, 0, 0);");
 
@@ -175,9 +188,22 @@ router.post('/', function (req, res) {
     const NewDesc = req.body.orders_desc;
     const id = req.params.id;
     // res.status(404).json({ message: "category does not exist" + NewName + " " + id });
+
+    if (!NewName) {
+      res.status(400).json({ message: "products_name was null or empty"});
+      return;
+    }
+    if (!NewPrice && NewPrice != 0) {
+      res.status(400).json({ message: "products_price was null or empty"});
+      return;
+    }
+    if (!NewDesc) {
+      res.status(400).json({ message: "products_desc was null or empty"});
+      return;
+    }
   
     let db = database.GetDB();
-    db.run("UPDATE Orders SET orders_name = '" + NewName + "' WHERE orders_id = " + id + ";");
+    db.run("UPDATE Orders SET orders_name = '" + NewName + "', orders_price = " + NewPrice + ", orders_desc = '" + NewDesc + "' WHERE orders_id = " + id + ";");
     res.status(200).json({ message: "Changed!" });
     db.close();
   });
