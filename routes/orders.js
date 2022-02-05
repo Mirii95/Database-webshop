@@ -102,7 +102,6 @@ router.get('/:id', function (req, res) {
     results.push(rows);
     res.json(results);
   });
-
   db.close();
 });
 

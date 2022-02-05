@@ -31,8 +31,6 @@ const TABLE_ONE = `
 CREATE TABLE "categories" (
 	"categories_id"	INTEGER NOT NULL UNIQUE,
 	"categories_name"	TEXT NOT NULL,
-	"orders_id"	INTEGER NOT NULL,
-	FOREIGN KEY("orders_id") REFERENCES "orders"("orders_id"),
 	PRIMARY KEY("categories_id" AUTOINCREMENT)
 );
 `;
@@ -83,6 +81,28 @@ CREATE TABLE "users" (
 );
 `
 
+const TABLE_SIX = `
+CREATE TABLE "user_order_relations" (
+    "id"	INTEGER NOT NULL UNIQUE,
+    "users_id"	INTEGER NOT NULL,
+    "orders_id"	INTEGER NOT NULL,
+    FOREIGN KEY("users_id") REFERENCES "users"("users_id"),
+    FOREIGN KEY("orders_id") REFERENCES "orders"("orders_id"),
+    PRIMARY KEY("id" AUTOINCREMENT)
+);
+`
+
+const TABLE_SEVEN = `
+CREATE TABLE "product_order_relations" (
+    "id"	INTEGER NOT NULL UNIQUE,
+    "products_id"	INTEGER NOT NULL,
+    "orders_id"	INTEGER NOT NULL,
+    FOREIGN KEY("products_id") REFERENCES "products"("products_id"),
+    FOREIGN KEY("orders_id") REFERENCES "orders"("orders_id"),
+    PRIMARY KEY("id" AUTOINCREMENT)
+);
+`
+
 function CREATE_TABLES() {
     let db = GetDB();
     
@@ -95,21 +115,25 @@ function CREATE_TABLES() {
         db.run('DROP TABLE IF EXISTS "orders";');
         db.run('DROP TABLE IF EXISTS "products";');
         db.run('DROP TABLE IF EXISTS "users";');
-        
+        db.run('DROP TABLE IF EXISTS "user_order_relations";');
+        db.run('DROP TABLE IF EXISTS "product_order_relations";');
+
         // Create tables
         db.run(TABLE_ONE);
         db.run(TABLE_TWO);
         db.run(TABLE_THREE);
         db.run(TABLE_FOUR);
         db.run(TABLE_FIVE);
+        db.run(TABLE_SIX);
+        db.run(TABLE_SEVEN);
 
         // Insert data CATEGORIES
-        db.run("INSERT INTO categories (categories_name, orders_id)" +
-        "VALUES ('Kimono', 0);");
-        db.run("INSERT INTO categories (categories_name, orders_id)" +
-        "VALUES ('Homongi', 0);");
-        db.run("INSERT INTO categories (categories_name, orders_id)" +
-        "VALUES ('Yukata', 0);");
+        db.run("INSERT INTO categories (categories_name)" +
+        "VALUES ('Kimono');");
+        db.run("INSERT INTO categories (categories_name)" +
+        "VALUES ('Homongi');");
+        db.run("INSERT INTO categories (categories_name)" +
+        "VALUES ('Yukata');");
 
         // Insert data COUNTRIES
         db.run("INSERT INTO countries (countries_name) VALUES ('Japan');");
@@ -139,29 +163,24 @@ function CREATE_TABLES() {
         "VALUES ('Philip', 0, 0);");
         db.run("INSERT INTO users (users_name, orders_id, countries_id)" +
         "VALUES ('Mirjam', 0, 0);");
+
+        // Insert data user_order_relations
+        db.run("INSERT INTO user_order_relations (users_id, orders_id)" +
+        "VALUES (0, 0);");
+        db.run("INSERT INTO user_order_relations (users_id, orders_id)" +
+        "VALUES (0, 0);");
+        db.run("INSERT INTO user_order_relations (users_id, orders_id)" +
+        "VALUES (0, 0);");
+
+        // Insert data product_order_relations
+        db.run("INSERT INTO product_order_relations (products_id, orders_id)" +
+        "VALUES (0, 0);");
+        db.run("INSERT INTO product_order_relations (products_id, orders_id)" +
+        "VALUES (0, 0);");
+        db.run("INSERT INTO product_order_relations (products_id, orders_id)" +
+        "VALUES (0, 0);");
     });
-    
-    // db.close(); 
-    // db.on
-    // db = GetDB();
-
     db.close(); 
-
-    // SELECT - extracts data from a database
-    // UPDATE - updates data in a database
-    // DELETE - deletes data from a database
-    // INSERT INTO - inserts new data into a database
-    // CREATE DATABASE - creates a new database
-    // ALTER DATABASE - modifies a database
-    // CREATE TABLE - creates a new table
-    // ALTER TABLE - modifies a table
-    // DROP TABLE - deletes a table
-    // CREATE INDEX - creates an index (search key)
-    // DROP INDEX - deletes an index
-
-  
-    // INSERT INTO countries (countries_id, countries_name)
-    // VALUES (countries_id, countries_name);
 }
 
 function DELETE_TABLES() {
@@ -172,25 +191,12 @@ function DELETE_TABLES() {
     db.run('DROP TABLE IF EXISTS "orders";');
     db.run('DROP TABLE IF EXISTS "products";');
     db.run('DROP TABLE IF EXISTS "users";');
+    db.run('DROP TABLE IF EXISTS "user_order_relation";');
+    db.run('DROP TABLE IF EXISTS "product_order_relations";');
 
     db.close();
 }
 
-// db.serialize(function() {
-//   db.run("CREATE TABLE lorem (info TEXT)");
-
-//   var stmt = db.prepare("INSERT INTO lorem VALUES (?)");
-//   for (var i = 0; i < 10; i++) {
-//       stmt.run("Ipsum " + i);
-//   }
-//   stmt.finalize();
-
-//   db.each("SELECT rowid AS id, info FROM lorem", function(err, row) {
-//       console.log(row.id + ": " + row.info);
-//   });
-// });
-
-// module.exports.Dinges = TEST;
 module.exports.CREATE_TABLES = CREATE_TABLES;
 module.exports.DELETE_TABLES = DELETE_TABLES;
 module.exports.GetDB = GetDB;

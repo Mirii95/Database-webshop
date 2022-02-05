@@ -43,7 +43,7 @@ app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 //     res.json({ message: "Welkom bij de webshop-api" });
 // });
 
-// db.CREATE_TABLES();
+db.CREATE_TABLES();
 const server = app.listen(process.env.PORT || 8080, () => {
     let name = process.env.APP_NAME || 'app';
     let port = server.address().port;
