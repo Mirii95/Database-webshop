@@ -1,6 +1,8 @@
 const express = require('express');
 const database = require('../database/database.js')
 const router = express.Router();
+
+
 // • POST api/auth (token) • body: username of user_id
 // Middleware
 // • Toepassen op alle U en A in de rekenhulp
@@ -9,6 +11,7 @@ const router = express.Router();
 // In de header
 // • Content-Type: application/json
 // • Authorization: Bearer TokenString64bits
+
 
 // delete /api/auth/:id
 // {
