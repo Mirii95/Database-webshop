@@ -1,5 +1,6 @@
 const express = require('express');
 const database = require('../database/connection.js')
+const CheckAuth = require('../middleware/checkAuth.js');
 const router = express.Router();
 
 
@@ -7,6 +8,7 @@ const router = express.Router();
 // Middleware
 // • Toepassen op alle U en A in de rekenhulp
 // Voeg een nieuw product toe
+
 // • POST http://localhost:8000/api/products
 // In de header
 // • Content-Type: application/json
@@ -50,14 +52,11 @@ const router = express.Router();
 
 router.post("/", function (req, res) {
     const login = req.body.name;
-    
-    if (!req.userTemp){
-        res.status(403).json({ message: "You are not authorised to post!"});
-        return;
-      }
 
     db.run("INSERT INTO authentication (id) VALUES (0);");
-  
+    // req.headers['authorization'] = ""
+    // req.headers['authorization'] = CheckAuth.generateAccessToken({ username: req.body.name });
+    req.headers['authorization'] = CheckAuth.generateAccessToken({ username: "Tessa" });
     res.status(200).json({ message: "ok"});
     db.close();
 });

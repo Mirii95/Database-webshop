@@ -1,5 +1,6 @@
 const express = require("express");
 const database = require("../database/connection.js");
+const CheckAuth = require('../middleware/checkAuth.js');
 const router = express.Router();
 /**
  * @swagger
@@ -163,7 +164,7 @@ router.get("/:id", function (req, res) {
  *        $ref: '#/components/schemas/Category'
  */
 
-router.post("/", function (req, res) {
+router.post("/",  function (req, res) {
     const NewName = req.body.name;
     
     if (!req.userAdmin){
@@ -207,16 +208,13 @@ router.post("/", function (req, res) {
  *       schema:
  *        $ref: '#/components/schemas/Category'
  */
-
+//CheckAuth.authenticateToken,
 router.patch("/:id", function (req, res) {
   const NewName = req.body.name;
   const id = req.params.id;
   let db = database.GetDB();
 
-  if (!req.userAdmin){
-    res.status(403).json({ message: "You are not authorised to patch!"});
-    return;
-  }
+
 
   if (!NewName) {
     res.status(400).json({ message: "products_name was null or empty"});
