@@ -1,5 +1,5 @@
 const express = require('express');
-const database = require('../database/database.js')
+const database = require('../database/connection.js')
 const router = express.Router();
 
 
@@ -12,10 +12,10 @@ const router = express.Router();
 // • Content-Type: application/json
 // • Authorization: Bearer TokenString64bits
 
+router.post("/", function (req, res) {
+    
+});
 
-// delete /api/auth/:id
-// {
-//     "message": "succes"
-// }
-
-// module.exports = router;
+router.post("/", function (req, res) {
+    
+});

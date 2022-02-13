@@ -1,6 +1,6 @@
 const express = require("express");
 const { get } = require("express/lib/response");
-const database = require("../database/database.js");
+const database = require("../database/connection.js");
 const router = express.Router();
 /**
  * @swagger

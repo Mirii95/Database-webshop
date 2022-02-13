@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
-const db = require('./database/database.js')
+const db = require('./database/connection.js');
+const CheckAuth = require('./middleware/checkAuth.js');
 
 // ================================================ CREATION ===========
 
@@ -28,7 +29,7 @@ const swaggerOptions = {
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 // ================================================ MIDDLEWARE =========
 app.use(express.json()); // adds the json body to the request object
-
+app.use(CheckAuth.TimeTester);
 // ================================================ ROUTES =============
 app.use('/api/categories', require('./routes/categories'));
 app.use('/api/countries', require('./routes/countries'));

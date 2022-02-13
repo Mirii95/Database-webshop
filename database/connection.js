@@ -103,6 +103,12 @@ CREATE TABLE "product_order_relations" (
 );
 `
 
+const TABLE_EIGHT = `
+CREATE TABLE "authentication" (
+    "id"	INTEGER NOT NULL UNIQUE,
+);
+`
+
 function CREATE_TABLES() {
     let db = GetDB();
     
@@ -117,6 +123,7 @@ function CREATE_TABLES() {
         db.run('DROP TABLE IF EXISTS "users";');
         db.run('DROP TABLE IF EXISTS "user_order_relations";');
         db.run('DROP TABLE IF EXISTS "product_order_relations";');
+        db.run('DROP TABLE IF EXISTS "authentication";');
 
         // Create tables
         db.run(TABLE_ONE);
@@ -126,6 +133,7 @@ function CREATE_TABLES() {
         db.run(TABLE_FIVE);
         db.run(TABLE_SIX);
         db.run(TABLE_SEVEN);
+        // db.run(TABLE_EIGHT);
 
         // Insert data CATEGORIES
         db.run("INSERT INTO categories (categories_name)" +
@@ -193,6 +201,7 @@ function DELETE_TABLES() {
     db.run('DROP TABLE IF EXISTS "users";');
     db.run('DROP TABLE IF EXISTS "user_order_relation";');
     db.run('DROP TABLE IF EXISTS "product_order_relations";');
+    db.run('DROP TABLE IF EXISTS "authentication";');
 
     db.close();
 }
