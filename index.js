@@ -2,13 +2,14 @@ require('dotenv').config();
 const express = require('express');
 const db = require('./database/connection.js');
 const CheckAuth = require('./middleware/checkAuth.js');
-
+const jwt = require('jsonwebtoken');
+require('crypto').randomBytes(64).toString('hex');
 // ================================================ CREATION ===========
-
+// https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs
 const app = express();
 
 // ================================================ SERVE FRONTEND =====
-
+const SECRET_TOKEN = "552544e02c24f6552d03b5e4ec2185598a14fae9e5900577975b1dea49535c4c44666e22c788a074162e7c33a491caeca2df3a122d3c0963d0a684e076535ea6";
 app.use(express.static('../public'));
 
 const swaggerJsdoc = require('swagger-jsdoc');
@@ -30,6 +31,7 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 // ================================================ MIDDLEWARE =========
 app.use(express.json()); // adds the json body to the request object
 app.use(CheckAuth.TimeTester);
+app.use(CheckAuth.AuthTest);
 // ================================================ ROUTES =============
 app.use('/api/categories', require('./routes/categories'));
 app.use('/api/countries', require('./routes/countries'));

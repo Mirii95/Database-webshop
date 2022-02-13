@@ -137,6 +137,10 @@ router.post("/", function (req, res) {
   const NewPrice = req.body.products_price;
   const NewDesc = req.body.products_desc;
 
+  if (!req.userAdmin){
+    res.status(403).json({ message: "You are not authorised to post!" });
+    return;
+  }
 
   if (!NewName) {
     res.status(400).json({ message: "products_name was null or empty"});
@@ -198,6 +202,11 @@ router.patch("/:id", function (req, res) {
   const id = req.params.id;
   // res.status(404).json({ message: "category does not exist" + NewName + " " + id });
 
+  if (!req.userAdmin){
+    res.status(403).json({ message: "You are not authorised to patch!"});
+    return;
+  }
+
   if (!NewName) {
     res.status(400).json({ message: "products_name was null or empty"});
     return;
@@ -231,6 +240,11 @@ router.patch("/:id", function (req, res) {
 router.delete("/:id", function (req, res) {
   const id = req.params.id;
   db = database.GetDB();
+
+  if (!req.userAdmin){
+    res.status(403).json({ message: "You are not authorised to delete!"});
+    return;
+  }
 
   db.run("DELETE FROM Products WHERE products_id = " + id + ";");
   res.status(200).json({ message: "Deleted!" });

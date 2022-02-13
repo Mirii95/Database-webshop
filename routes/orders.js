@@ -53,6 +53,12 @@ const router = express.Router();
 router.get('/', function (req, res) {
   let db = database.GetDB();
   let results = [];
+
+  if (!req.userAdmin){
+    res.status(403).json({ message: "You are not authorised to get!"});
+    return;
+  }
+
   db.all(
     "SELECT orders_id, orders_name, orders_price, orders_desc FROM Orders",
     function (err, rows) {
@@ -132,6 +138,11 @@ router.post('/', function (req, res) {
   const NewDesc = req.body.orders_desc;
   let db = database.GetDB();
 
+  if (!req.userTemp){
+    res.status(403).json({ message: "You are not authorised to post!"});
+    return;
+  }
+
   if (!NewName) {
     res.status(400).json({ message: "products_name was null or empty"});
     return;
@@ -187,6 +198,11 @@ router.post('/', function (req, res) {
     const NewDesc = req.body.orders_desc;
     const id = req.params.id;
     // res.status(404).json({ message: "category does not exist" + NewName + " " + id });
+
+    if (!req.userAdmin){
+      res.status(403).json({ message: "You are not authorised to patch!"});
+      return;
+    }
 
     if (!NewName) {
       res.status(400).json({ message: "products_name was null or empty"});

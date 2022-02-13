@@ -45,6 +45,12 @@ const router = express.Router();
  router.get("/", function (req, res) {
   let db = database.GetDB();
   let results = [];
+
+  if (!req.userAdmin){
+    res.status(403).json({ message: "You are not authorised to get!"});
+    return;
+  }
+
   db.all(
     "SELECT users_id, users_name FROM Users",
     function (err, rows) {
@@ -130,6 +136,12 @@ router.get("/:id/orders", function (req, res) {
   const id = req.params.id;
   let db = database.GetDB();
   let results = [];
+
+  if (!req.userTemp){
+    res.status(403).json({ message: "You are not authorised to get!"});
+    return;
+  }
+
 db.all(
     "SELECT * FROM Orders WHERE users_id=" + id + ";",
     function (err, rows) {
@@ -225,6 +237,11 @@ router.patch("/:id", function (req, res) {
   const NewName = req.body.users_name;
   const id = req.params.id;
   // res.status(404).json({ message: "category does not exist" + NewName + " " + id });
+
+  if (!req.userTemp){
+    res.status(403).json({ message: "You are not authorised to patch!"});
+    return;
+  }
 
   if (!NewName) {
     res.status(400).json({ message: "products_name was null or empty"});

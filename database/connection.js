@@ -31,6 +31,7 @@ const TABLE_ONE = `
 CREATE TABLE "categories" (
 	"categories_id"	INTEGER NOT NULL UNIQUE,
 	"categories_name"	TEXT NOT NULL,
+    "orders_id"	INTEGER,
 	PRIMARY KEY("categories_id" AUTOINCREMENT)
 );
 `;
@@ -41,7 +42,7 @@ CREATE TABLE "countries" (
 	"countries_name"	TEXT NOT NULL,
 	PRIMARY KEY("countries_id" AUTOINCREMENT)
 );
-`
+`;
 const TABLE_THREE = `
 CREATE TABLE "orders" (
 	"orders_id"	INTEGER NOT NULL UNIQUE,
@@ -58,7 +59,7 @@ CREATE TABLE "orders" (
 	FOREIGN KEY("categories_id") REFERENCES "categories"("categories_id"),
 	PRIMARY KEY("orders_id" AUTOINCREMENT)
 );
-`
+`;
 const TABLE_FOUR = `
 CREATE TABLE "products" (
 	"products_id"	INTEGER NOT NULL UNIQUE,
@@ -68,7 +69,7 @@ CREATE TABLE "products" (
 	"categories_id"	INTEGER NOT NULL,
 	PRIMARY KEY("products_id" AUTOINCREMENT)
 );
-`
+`;
 const TABLE_FIVE = `
 CREATE TABLE "users" (
 	"users_id"	INTEGER NOT NULL UNIQUE,
@@ -79,7 +80,7 @@ CREATE TABLE "users" (
 	FOREIGN KEY("orders_id") REFERENCES "orders"("orders_id"),
 	PRIMARY KEY("users_id" AUTOINCREMENT)
 );
-`
+`;
 
 const TABLE_SIX = `
 CREATE TABLE "user_order_relations" (
@@ -90,7 +91,7 @@ CREATE TABLE "user_order_relations" (
     FOREIGN KEY("orders_id") REFERENCES "orders"("orders_id"),
     PRIMARY KEY("id" AUTOINCREMENT)
 );
-`
+`;
 
 const TABLE_SEVEN = `
 CREATE TABLE "product_order_relations" (
@@ -101,13 +102,13 @@ CREATE TABLE "product_order_relations" (
     FOREIGN KEY("orders_id") REFERENCES "orders"("orders_id"),
     PRIMARY KEY("id" AUTOINCREMENT)
 );
-`
+`;
 
 const TABLE_EIGHT = `
 CREATE TABLE "authentication" (
     "id"	INTEGER NOT NULL UNIQUE,
 );
-`
+`;
 
 function CREATE_TABLES() {
     let db = GetDB();

@@ -165,8 +165,14 @@ router.get("/:id", function (req, res) {
 
 router.post("/", function (req, res) {
     const NewName = req.body.name;
-    let db = database.GetDB();
+    
+    if (!req.userAdmin){
+      res.status(403).json({ message: "You are not authorised to post!" });
+      return;
+    }
 
+    
+    let db = database.GetDB();
     db.run("INSERT INTO categories (categories_name, orders_id) VALUES ('" + NewName + "', 0);");
   
     res.status(200).json({ message: "You try to add: " + NewName });
@@ -207,6 +213,11 @@ router.patch("/:id", function (req, res) {
   const id = req.params.id;
   let db = database.GetDB();
 
+  if (!req.userAdmin){
+    res.status(403).json({ message: "You are not authorised to patch!"});
+    return;
+  }
+
   if (!NewName) {
     res.status(400).json({ message: "products_name was null or empty"});
     return;
@@ -239,6 +250,11 @@ router.patch("/:id", function (req, res) {
 router.delete("/:id", function (req, res) {
   const id = req.params.id;
   db = database.GetDB();
+
+  if (!req.userAdmin){
+    res.status(403).json({ message: "You are not authorised to delete!"});
+    return;
+  }
 
   db.run("DELETE FROM Categories WHERE categories_id = " + id + ";");
   res.status(200).json({ message: "Deleted!" });
