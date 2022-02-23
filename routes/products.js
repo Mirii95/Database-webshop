@@ -32,7 +32,14 @@ const router = express.Router();
  * /api/products:
  *  get:
  *   tags: [Products]
- *   description: Haalt alle products op waaraan een Product gekoppeld kan zijn.
+ *   description: search query.
+ *   parameters:
+ *    - in: query
+ *      name: q
+ *      schema:
+ *       type: string
+ *      required: false
+ *      description: name of the product
  *   responses:
  *    200:
  *     description: Json met de products.
@@ -51,16 +58,30 @@ const router = express.Router();
 
 router.get("/", function (req, res) {
   const id = req.params.id;
+
+  const search = req.query.q;
+  
   let db = database.GetDB();
   let results = [];
-
-  db.all(
-    "SELECT products_id, products_name FROM Products",
-    function (err, rows) {
-      results.push(rows);
-      res.json(results);
-    }
-  );
+  
+  if (search != undefined) {
+    // Do the other query
+    db.all(
+      "SELECT products_id, products_name FROM Products WHERE products_name LIKE '%" + search + "%';",
+      function (err, rows) {
+        results.push(rows);
+        res.json(results);
+      }
+    );
+  } else {
+    db.all(
+      "SELECT products_id, products_name FROM Products",
+      function (err, rows) {
+        results.push(rows);
+        res.json(results);
+      }
+    );
+  }
   db.close();
 });
 

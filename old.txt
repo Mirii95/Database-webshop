@@ -173,3 +173,29 @@
 );
     
     res.json({access_token: token});
+
+
+    /**
+ * @swagger
+ * /api/products:
+ *  get:
+ *   tags: [Products]
+ *   description: Haalt alle products op waaraan een Product gekoppeld kan zijn.
+ *   responses:
+ *    200:
+ *     description: Json met de products.
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type:
+ *         object
+ *        properties:
+ *         categories:
+ *          type:
+ *           array
+ *          items:
+ *           $ref: '#/components/schemas/Products'
+ */
+
+
+curl -X 'GET' 'http://localhost:8080/api/categories' -H 'accept: application/json'

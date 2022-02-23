@@ -52,7 +52,8 @@ const router = express.Router();
   }
 
   db.all(
-    "SELECT users_id, users_name FROM Users",
+    // "SELECT users_id, users_name FROM Users",
+    "SELECT * FROM Users",
     function (err, rows) {
       results.push(rows);
       res.json(results);
@@ -102,6 +103,25 @@ router.get('/:id', function (req, res) {
   });
   db.close();
 });
+
+
+// router.get('/me', function (req, res) {
+//   const id = req.params.id;
+//   let db = database.GetDB();
+//   let results = [];
+
+//   if (!req.userTemp){
+//     res.status(403).json({ message: "You are not authorised to get!"});
+//     return;
+//   }
+
+//   db.get("SELECT ... FROM ... WHERE ..." + id + ";", function(err, rows) {
+//       results.push(rows);
+//       res.json(results);
+//   });
+//   db.close();
+// });
+
 
 /**
  * @swagger

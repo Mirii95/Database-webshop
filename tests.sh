@@ -139,6 +139,12 @@ curl -X 'GET' \
   -H 'accept: application/json'
 
 echo "\n"
+echo "GET /api/products?q=on\n"
+curl -X 'GET' \
+  'http://localhost:8080/api/products?q=on' \
+  -H 'accept: application/json'
+
+echo "\n"
 echo "POST /api/products\n"
 curl -X 'POST' \
   'http://localhost:8080/api/products' \

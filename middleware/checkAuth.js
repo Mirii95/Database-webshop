@@ -12,6 +12,7 @@ router.use(function (req, res, next) {
 
 let TimeTester = function (req, res, next) {
     console.log('Time:', Date.now());
+    console.log(req.headers);
     next();
 };
 

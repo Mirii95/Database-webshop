@@ -1,4 +1,5 @@
 var sqlite3 = require("sqlite3").verbose();
+const bcrypt = require("bcrypt");
 const USE_MEM_DB = false;
 
  
@@ -74,6 +75,7 @@ const TABLE_FIVE = `
 CREATE TABLE "users" (
 	"users_id"	INTEGER NOT NULL UNIQUE,
 	"users_name"	TEXT NOT NULL,
+    "users_password"   VARCHAR(250) NOT NULL,
 	"orders_id"	INTEGER NOT NULL,
 	"countries_id"	INTEGER NOT NULL,
 	FOREIGN KEY("countries_id") REFERENCES "countries"("countries_id"),
@@ -166,13 +168,14 @@ function CREATE_TABLES() {
         "VALUES ('Yukata Paars', '750', 'Een paarse yukata', 0);");
 
         // Insert data USERS
-        db.run("INSERT INTO users (users_name, orders_id, countries_id)" +
-        "VALUES ('Tessa', 0, 0);");
-        db.run("INSERT INTO users (users_name, orders_id, countries_id)" +
-        "VALUES ('Philip', 0, 0);");
-        db.run("INSERT INTO users (users_name, orders_id, countries_id)" +
-        "VALUES ('Mirjam', 0, 0);");
-
+        db.run("INSERT INTO users (users_name, users_password, orders_id, countries_id)" +
+        "VALUES ('Tessa', '" + HashPassword("1") + "', 0, 0);");
+        db.run("INSERT INTO users (users_name, users_password, orders_id, countries_id)" +
+        "VALUES ('Philip', '" + HashPassword("1") + "', 0, 0);");
+        db.run("INSERT INTO users (users_name, users_password, orders_id, countries_id)" +
+        "VALUES ('Mirjam', '" + HashPassword("2") + "', 0, 0);");
+        
+        
         // Insert data user_order_relations
         db.run("INSERT INTO user_order_relations (users_id, orders_id)" +
         "VALUES (0, 0);");
@@ -207,6 +210,11 @@ function DELETE_TABLES() {
     db.close();
 }
 
+function HashPassword(password){
+    return bcrypt.hashSync(password, 10);
+}
+
 module.exports.CREATE_TABLES = CREATE_TABLES;
 module.exports.DELETE_TABLES = DELETE_TABLES;
 module.exports.GetDB = GetDB;
+module.exports.HashPassword = HashPassword;

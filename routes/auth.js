@@ -2,14 +2,8 @@ const express = require('express');
 const database = require('../database/connection.js')
 const CheckAuth = require('../middleware/checkAuth.js');
 const router = express.Router();
-
-
-
-
-
-
-
-const jwt = require('jsonwebtoken'); 
+const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
 // const token = jwt.sign(
 //     {user_id: row.id},
 //     process.env.SECRET
@@ -23,15 +17,6 @@ const jwt = require('jsonwebtoken');
 //     }
 // );
     
-
-
-
-
-
-
-
-
-
 // • POST api/auth (token) • body: username of user_id
 // Middleware
 // • Toepassen op alle U en A in de rekenhulp
@@ -81,17 +66,66 @@ const jwt = require('jsonwebtoken');
  *       schema:
  *        $ref: '#/components/schemas/authentication'
  */
-
 router.post("/", function (req, res) {
     let username = req.body.username;
     let password = req.body.password;
+    let db = database.GetDB();
+    username = "Tessa";
+    let results = [];
+    let succes = false;
+    
 
-    // const username = "windesheim@gmail.nl";
-    // const password = "test1234";
-    const token = jwt.sign(
-        {user_id: username},
-        process.env.SECRET
-    );
+
+    db.serialize(function() {
+        db.all("SELECT users_id, users_name, users_password FROM users WHERE users_name='" + username + "';",
+        function(err, rows) {
+            let returnedUser = rows[0];
+            console.log(returnedUser);
+            
+            succes = bcrypt.compareSync(
+                password,
+                returnedUser["users_password"]
+            );
+
+            const token = jwt.sign(
+                {users_id: returnedUser["users_id"]},
+                {users_name: returnedUser["users_name"]},
+                process.env.SECRET
+            );
+            res.status(200).json({ message: "Foute gegevens", password: password, username: username, succes: succes});
+        });           
+    });
+    db.close();
+
+    // let succes = bcrypt.compareSync(
+    //     password,
+    //     users_password
+    // );
+    // db.all(
+    //     // "SELECT users_id, users_name FROM Users",
+    //     "SELECT * FROM Users",
+    //     function (err, rows) {
+    //       results.push(rows);
+    //     }
+    //   );
+
+    // 
+
+    
+    let users_password = '$2b$10$JG042weQ3Hy5AFCz8MLREOak5ZtVPM9tZC8Zt8r/I9oHvayTSUMru';
+    
+
+    
+    
+
+
+    // db.close();
+    
+
+    // const token = jwt.sign(
+    //     {user_id: username},
+    //     process.env.SECRET
+    // );
         
     // jwt.verify(
     //     token, 
@@ -101,8 +135,10 @@ router.post("/", function (req, res) {
     //     }
     // );
 
+
+
     // res.status(200).json({ message: "Foute gegevens"});
-    res.status(200).json({ message: "Foute gegevens", password: password, username: username, token: token});
+    // res.status(200).json({ message: "Foute gegevens", password: password, username: username, token: token});
 
     // db.run("INSERT INTO authentication (id) VALUES (0);");
     // req.headers['authorization'] = "";
@@ -112,6 +148,16 @@ router.post("/", function (req, res) {
 
     // db.close();
 });
+
+// function GetUser(username){
+//     let db = database.GetDB();
+//     db.all("SELECT users_name, users_password FROM users WHERE users_name='" + username + "';",
+//     function(err, rows) {
+//         console.log(rows);
+//         return rows[0];
+//     });
+//     db.close();
+// }
 
 module.exports = router;
 

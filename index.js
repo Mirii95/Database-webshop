@@ -47,6 +47,7 @@ app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // });
 
 db.CREATE_TABLES();
+console.log(db.HashPassword("1"));
 const server = app.listen(process.env.PORT || 8080, () => {
     let name = process.env.APP_NAME || 'app';
     let port = server.address().port;
