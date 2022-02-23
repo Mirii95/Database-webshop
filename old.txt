@@ -165,4 +165,11 @@
  *       $ref: '#/components/schemas/Countries'
 
 
- 
+ const bcrypt = require('bcrypt’);
+
+ const jwt = require('jsonwebtoken'); const token = jwt.sign(
+    {user_id: row.id},
+    process.env.SECRET
+);
+    
+    res.json({access_token: token});

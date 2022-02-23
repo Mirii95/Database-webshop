@@ -38,7 +38,7 @@ app.use('/api/countries', require('./routes/countries'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/users', require('./routes/users'));
-
+app.use('/api/auth', require('./routes/auth'));
 // ================================================ START ==============
 // app.use('/documentation', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
