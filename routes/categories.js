@@ -45,11 +45,12 @@ const router = express.Router();
 // GET ALLES
 router.get("/", function (req, res) {
     let db = database.GetDB();
-    let results = [];
+    // let results = [];
+    let results = {categories: []};
   db.all(
       "SELECT categories_id, categories_name FROM categories",
       function (err, rows) {
-          results.push(rows);
+          results["categories"] = rows;
           res.json(results);
   });
   db.close();
@@ -172,11 +173,20 @@ router.post("/",  function (req, res) {
       return;
     }
 
-    
+    if (NewName.match(/^(\W{0,1})$/i)) {
+      res.status(403).json({ message: "Failed!" });
+      return;
+    }
+
+    if (NewName.match(/\d/)) {
+      res.status(403).json({ message: "Must contain text only, and be a minimum of 2 characters long" });
+      return;
+    }
+
     let db = database.GetDB();
     db.run("INSERT INTO categories (categories_name, orders_id) VALUES ('" + NewName + "', 0);");
   
-    res.status(200).json({ message: "You try to add: " + NewName });
+    res.status(200).json({ message: "success"});
     db.close();
 });
 
@@ -214,10 +224,18 @@ router.patch("/:id", function (req, res) {
   const id = req.params.id;
   let db = database.GetDB();
 
-
-
   if (!NewName) {
     res.status(400).json({ message: "products_name was null or empty"});
+    return;
+  }
+
+  if (NewName.match(/^(\W{0,1})$/i)) {
+    res.status(403).json({ message: "Failed!" });
+    return;
+  }
+
+  if (NewName.match(/\d/)) {
+    res.status(403).json({ message: "Must contain text only, and be a minimum of 2 characters long" });
     return;
   }
   
@@ -253,9 +271,21 @@ router.delete("/:id", function (req, res) {
     res.status(403).json({ message: "You are not authorised to delete!"});
     return;
   }
+  
+  var results = [];
 
-  db.run("DELETE FROM Categories WHERE categories_id = " + id + ";");
-  res.status(200).json({ message: "Deleted!" });
+  db.get("SELECT COUNT(products_id) AS NumberOfProducts FROM products WHERE products_id=" + id + ";",
+    function (err, rows) {
+      results.push(rows);
+      if(results[0]["NumberOfProducts"]>0) {
+        res.status(403).json({ message: "You can't delete categories when there are still products in there."});
+      } else {
+        db.run("DELETE FROM Categories WHERE categories_id = " + id + ";");
+        res.status(200).json({ message: "Success!" });
+      }
+    }
+  );
+
   db.close();
 });
 

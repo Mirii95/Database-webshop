@@ -64,8 +64,10 @@ CREATE TABLE "orders" (
 const TABLE_FOUR = `
 CREATE TABLE "products" (
 	"products_id"	INTEGER NOT NULL UNIQUE,
+    "products_code" TEXT NOT NULL, 
 	"products_name"	TEXT NOT NULL,
 	"products_price"	NUMERIC NOT NULL,
+    "products_stock"    NUMERIC NOT NULL,
 	"products_desc"	TEXT,
 	"categories_id"	INTEGER NOT NULL,
 	PRIMARY KEY("products_id" AUTOINCREMENT)
@@ -145,6 +147,8 @@ function CREATE_TABLES() {
         "VALUES ('Homongi');");
         db.run("INSERT INTO categories (categories_name)" +
         "VALUES ('Yukata');");
+        db.run("INSERT INTO categories (categories_name)" +
+        "VALUES ('Schoenen');");
 
         // Insert data COUNTRIES
         db.run("INSERT INTO countries (countries_name) VALUES ('Japan');");
@@ -160,12 +164,12 @@ function CREATE_TABLES() {
         "VALUES ('Yukata Paars', '750', 'The best of the best!', 0, 0, 0, 0);");
 
         // Insert data PRODUCTS
-        db.run("INSERT INTO products (products_name, products_price, products_desc, categories_id)" +
-        "VALUES ('Kimono Groen', '600', 'Een groene kimono', 0);");
-        db.run("INSERT INTO products (products_name, products_price, products_desc, categories_id)" +
-        "VALUES ('Homongi Blauw', '550', 'Een blauwe homongi', 1);");
-        db.run("INSERT INTO products (products_name, products_price, products_desc, categories_id)" +
-        "VALUES ('Yukata Paars', '750', 'Een paarse yukata', 0);");
+        db.run("INSERT INTO products (products_code, products_name, products_price, products_stock, products_desc, categories_id)" +
+        "VALUES ('LB-01', 'Kimono Groen', '600', 7, 'Een groene kimono', 0);");
+        db.run("INSERT INTO products (products_code, products_name, products_price, products_stock, products_desc, categories_id)" +
+        "VALUES ('LB-02', 'Homongi Blauw', '550', 9, 'Een blauwe homongi', 1);");
+        db.run("INSERT INTO products (products_code, products_name, products_price, products_stock, products_desc, categories_id)" +
+        "VALUES ('LB-03', 'Yukata Paars', '750', 2, 'Een paarse yukata', 0);");
 
         // Insert data USERS
         db.run("INSERT INTO users (users_name, users_password, orders_id, countries_id)" +

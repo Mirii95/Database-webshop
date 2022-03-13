@@ -62,7 +62,7 @@ router.get("/", function (req, res) {
   const search = req.query.q;
   
   let db = database.GetDB();
-  let results = [];
+  let results = {products: []};
   
   if (search != undefined) {
     // Do the other query
@@ -75,15 +75,23 @@ router.get("/", function (req, res) {
     );
   } else {
     db.all(
-      "SELECT products_id, products_name FROM Products",
+      // "SELECT products_id, products_name FROM Products",
+      "SELECT * FROM Products",
       function (err, rows) {
-        results.push(rows);
+        results["products"] = rows;
+
+        for (let i = 0; i < results["products"].length; i++) {
+          results["products"][i]["products_price_vat"] = results["products"][i]["products_price"] * 1.21;
+          
+        }
+
         res.json(results);
       }
     );
   }
   db.close();
 });
+
 
 /**
  * @swagger
@@ -182,12 +190,9 @@ router.post("/", function (req, res) {
   "VALUES ('" + NewName + "', " + NewPrice + ", '" + NewDesc + "' ,0);");
   
   db.close();
-  res.status(200).json({ message: "You try to add: " + NewName });
+  res.status(200).json({ message: "Succes!" });
 
 });
-
-
-
 
 /**
  * @swagger
