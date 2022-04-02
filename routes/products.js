@@ -8,21 +8,21 @@ const router = express.Router();
  *   Products:
  *    type: object
  *    required:
- *     - products_id
- *     - products_name
- *     - products_price
- *     - products_desc
+ *     - id
+ *     - name
+ *     - price
+ *     - desc
  *    properties:
- *     products_id:
+ *     id:
  *      type: integer
  *      description: De id van de Product.
- *     products_name:
+ *     name:
  *      type: string
  *      description: De naam van de Product.
- *     products_price:
+ *     price:
  *      type: number
  *      description: De prijs van de Product.
- *     products_desc:
+ *     desc:
  *      type: string
  *      description: De beschrijving van de Product.
  */
@@ -67,7 +67,7 @@ router.get("/", function (req, res) {
   if (search != undefined) {
     // Do the other query
     db.all(
-      "SELECT products_id, products_name FROM Products WHERE products_name LIKE '%" + search + "%';",
+      "SELECT id, name FROM Products WHERE name LIKE '%" + search + "%';",
       function (err, rows) {
         results.push(rows);
         res.json(results);
@@ -81,7 +81,7 @@ router.get("/", function (req, res) {
         results["products"] = rows;
 
         for (let i = 0; i < results["products"].length; i++) {
-          results["products"][i]["products_price_vat"] = results["products"][i]["products_price"] * 1.21;
+          results["products"][i]["price_vat"] = results["products"][i]["price"] * 1.21;
           
         }
 
@@ -127,7 +127,7 @@ router.get("/:id", function (req, res) {
   let results = [];
 
   db.get(
-    "SELECT products_id, products_name FROM Products WHERE products_id=" +
+    "SELECT id, name FROM Products WHERE id=" +
       id +
       ";",
     function (err, rows) {
@@ -172,21 +172,21 @@ router.post("/", function (req, res) {
   }
 
   if (!NewName) {
-    res.status(400).json({ message: "products_name was null or empty"});
+    res.status(400).json({ message: "name was null or empty"});
     return;
   }
   if (!NewPrice && NewPrice != 0) {
-    res.status(400).json({ message: "products_price was null or empty"});
+    res.status(400).json({ message: "price was null or empty"});
     return;
   }
   if (!NewDesc) {
-    res.status(400).json({ message: "products_desc was null or empty"});
+    res.status(400).json({ message: "desc was null or empty"});
     return;
   }
 
   let db = database.GetDB();
 
-  db.run("INSERT INTO Products (products_name, products_price, products_desc, categories_id)" +
+  db.run("INSERT INTO Products (name, price, desc, categories_id)" +
   "VALUES ('" + NewName + "', " + NewPrice + ", '" + NewDesc + "' ,0);");
   
   db.close();
@@ -234,12 +234,12 @@ router.patch("/:id", function (req, res) {
   }
 
   if (!NewName) {
-    res.status(400).json({ message: "products_name was null or empty"});
+    res.status(400).json({ message: "name was null or empty"});
     return;
   }
 
   let db = database.GetDB();
-  db.run("UPDATE Products SET products_name = '" + NewName + "' WHERE products_id = " + id + ";");
+  db.run("UPDATE Products SET name = '" + NewName + "' WHERE id = " + id + ";");
   res.status(200).json({ message: "Changed!" });
   db.close();
 });
@@ -272,7 +272,7 @@ router.delete("/:id", function (req, res) {
     return;
   }
 
-  db.run("DELETE FROM Products WHERE products_id = " + id + ";");
+  db.run("DELETE FROM Products WHERE id = " + id + ";");
   res.status(200).json({ message: "Deleted!" });
   db.close();
 });

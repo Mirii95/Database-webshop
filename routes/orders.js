@@ -9,21 +9,21 @@ const router = express.Router();
  *   Orders:
  *    type: object
  *    required:
- *     - orders_id
- *     - orders_name
- *     - orders_price
- *     - orders_desc
+ *     - id
+ *     - name
+ *     - price
+ *     - desc
  *    properties:
- *     orders_id:
+ *     id:
  *      type: integer
  *      description: De id van de Order.
- *     orders_name:
+ *     name:
  *      type: string
  *      description: De naam van de Order.
- *     orders_price:
+ *     price:
  *      type: number
  *      description: De prijs van de Order.
- *     orders_desc:
+ *     desc:
  *      type: string
  *      description: De beschrijving van de Order.
  */
@@ -60,7 +60,7 @@ router.get('/', function (req, res) {
   }
 
   db.all(
-    "SELECT orders_id, orders_name, orders_price, orders_desc FROM Orders",
+    "SELECT id, name, price, desc FROM Orders",
     function (err, rows) {
       results.push(rows);
       res.json(results);
@@ -104,7 +104,7 @@ router.get('/:id', function (req, res) {
   let db = database.GetDB();
   let results = [];
 
-  db.get("SELECT orders_id, orders_name, orders_price, orders_desc FROM Orders WHERE orders_id=" + id + ";", function(err, rows) {
+  db.get("SELECT id, name, price, desc FROM Orders WHERE id=" + id + ";", function(err, rows) {
     results.push(rows);
     res.json(results);
   });
@@ -156,7 +156,7 @@ router.post('/', function (req, res) {
     return;
   }
 
-  db.run("INSERT INTO Orders (orders_name, orders_price, orders_desc, products_id, users_id, countries_id, categories_id)" +
+  db.run("INSERT INTO Orders (name, price, desc, products_id, users_id, countries_id, categories_id)" +
   "VALUES ('" + NewName + "'," + NewPrice + ",'" + NewDesc + "', 0, 0, 0, 0);");
 
   res.status(200).json({ message: "You try to add: " + NewName + NewPrice + NewDesc });
@@ -218,7 +218,7 @@ router.post('/', function (req, res) {
     }
   
     let db = database.GetDB();
-    db.run("UPDATE Orders SET orders_name = '" + NewName + "', orders_price = " + NewPrice + ", orders_desc = '" + NewDesc + "' WHERE orders_id = " + id + ";");
+    db.run("UPDATE Orders SET name = '" + NewName + "', price = " + NewPrice + ", desc = '" + NewDesc + "' WHERE id = " + id + ";");
     res.status(200).json({ message: "Changed!" });
     db.close();
   });

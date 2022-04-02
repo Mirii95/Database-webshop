@@ -30,59 +30,59 @@ function TEST() {
 
 const TABLE_ONE = `
 CREATE TABLE "categories" (
-	"categories_id"	INTEGER NOT NULL UNIQUE,
-	"categories_name"	TEXT NOT NULL,
+	"id"	INTEGER NOT NULL UNIQUE,
+	"name"	TEXT NOT NULL,
     "orders_id"	INTEGER,
-	PRIMARY KEY("categories_id" AUTOINCREMENT)
+	PRIMARY KEY("id" AUTOINCREMENT)
 );
 `;
 
 const TABLE_TWO = `
 CREATE TABLE "countries" (
-	"countries_id"	INTEGER NOT NULL UNIQUE,
-	"countries_name"	TEXT NOT NULL,
-	PRIMARY KEY("countries_id" AUTOINCREMENT)
+	"id"	INTEGER NOT NULL UNIQUE,
+	"name"	TEXT NOT NULL,
+	PRIMARY KEY("id" AUTOINCREMENT)
 );
 `;
 const TABLE_THREE = `
 CREATE TABLE "orders" (
-	"orders_id"	INTEGER NOT NULL UNIQUE,
-	"orders_name"	TEXT NOT NULL,
-	"orders_price"	NUMERIC NOT NULL,
-	"orders_desc"	TEXT,
+	"id"	INTEGER NOT NULL UNIQUE,
+	"name"	TEXT NOT NULL,
+	"price"	NUMERIC NOT NULL,
+	"desc"	TEXT,
 	"products_id"	INTEGER NOT NULL,
 	"users_id"	INTEGER NOT NULL,
 	"countries_id"	INTEGER NOT NULL,
 	"categories_id"	INTEGER NOT NULL,
-	FOREIGN KEY("products_id") REFERENCES "products"("products_id"),
-	FOREIGN KEY("countries_id") REFERENCES "countries"("countries_id"),
-	FOREIGN KEY("users_id") REFERENCES "users"("users_id"),
-	FOREIGN KEY("categories_id") REFERENCES "categories"("categories_id"),
-	PRIMARY KEY("orders_id" AUTOINCREMENT)
+	FOREIGN KEY("products_id") REFERENCES "products"("id"),
+	FOREIGN KEY("countries_id") REFERENCES "countries"("id"),
+	FOREIGN KEY("users_id") REFERENCES "users"("id"),
+	FOREIGN KEY("categories_id") REFERENCES "categories"("id"),
+	PRIMARY KEY("id" AUTOINCREMENT)
 );
 `;
 const TABLE_FOUR = `
 CREATE TABLE "products" (
-	"products_id"	INTEGER NOT NULL UNIQUE,
-    "products_code" TEXT NOT NULL, 
-	"products_name"	TEXT NOT NULL,
-	"products_price"	NUMERIC NOT NULL,
-    "products_stock"    NUMERIC NOT NULL,
-	"products_desc"	TEXT,
+	"id"	INTEGER NOT NULL UNIQUE,
+    "code" TEXT NOT NULL, 
+	"name"	TEXT NOT NULL,
+	"price"	NUMERIC NOT NULL,
+    "stock"    NUMERIC NOT NULL,
+	"desc"	TEXT,
 	"categories_id"	INTEGER NOT NULL,
-	PRIMARY KEY("products_id" AUTOINCREMENT)
+	PRIMARY KEY("id" AUTOINCREMENT)
 );
 `;
 const TABLE_FIVE = `
 CREATE TABLE "users" (
-	"users_id"	INTEGER NOT NULL UNIQUE,
-	"users_name"	TEXT NOT NULL,
-    "users_password"   VARCHAR(250) NOT NULL,
+	"id"	INTEGER NOT NULL UNIQUE,
+	"name"	TEXT NOT NULL,
+    "password"   VARCHAR(250) NOT NULL,
 	"orders_id"	INTEGER NOT NULL,
 	"countries_id"	INTEGER NOT NULL,
-	FOREIGN KEY("countries_id") REFERENCES "countries"("countries_id"),
-	FOREIGN KEY("orders_id") REFERENCES "orders"("orders_id"),
-	PRIMARY KEY("users_id" AUTOINCREMENT)
+	FOREIGN KEY("countries_id") REFERENCES "countries"("id"),
+	FOREIGN KEY("orders_id") REFERENCES "orders"("id"),
+	PRIMARY KEY("id" AUTOINCREMENT)
 );
 `;
 
@@ -91,8 +91,8 @@ CREATE TABLE "user_order_relations" (
     "id"	INTEGER NOT NULL UNIQUE,
     "users_id"	INTEGER NOT NULL,
     "orders_id"	INTEGER NOT NULL,
-    FOREIGN KEY("users_id") REFERENCES "users"("users_id"),
-    FOREIGN KEY("orders_id") REFERENCES "orders"("orders_id"),
+    FOREIGN KEY("users_id") REFERENCES "users"("id"),
+    FOREIGN KEY("orders_id") REFERENCES "orders"("id"),
     PRIMARY KEY("id" AUTOINCREMENT)
 );
 `;
@@ -102,8 +102,8 @@ CREATE TABLE "product_order_relations" (
     "id"	INTEGER NOT NULL UNIQUE,
     "products_id"	INTEGER NOT NULL,
     "orders_id"	INTEGER NOT NULL,
-    FOREIGN KEY("products_id") REFERENCES "products"("products_id"),
-    FOREIGN KEY("orders_id") REFERENCES "orders"("orders_id"),
+    FOREIGN KEY("products_id") REFERENCES "products"("id"),
+    FOREIGN KEY("orders_id") REFERENCES "orders"("id"),
     PRIMARY KEY("id" AUTOINCREMENT)
 );
 `;
@@ -141,42 +141,42 @@ function CREATE_TABLES() {
         // db.run(TABLE_EIGHT);
 
         // Insert data CATEGORIES
-        db.run("INSERT INTO categories (categories_name)" +
+        db.run("INSERT INTO categories (name)" +
         "VALUES ('Kimono');");
-        db.run("INSERT INTO categories (categories_name)" +
+        db.run("INSERT INTO categories (name)" +
         "VALUES ('Homongi');");
-        db.run("INSERT INTO categories (categories_name)" +
+        db.run("INSERT INTO categories (name)" +
         "VALUES ('Yukata');");
-        db.run("INSERT INTO categories (categories_name)" +
+        db.run("INSERT INTO categories (name)" +
         "VALUES ('Schoenen');");
 
         // Insert data COUNTRIES
-        db.run("INSERT INTO countries (countries_name) VALUES ('Japan');");
-        db.run("INSERT INTO countries (countries_name) VALUES ('Korea');");
-        db.run("INSERT INTO countries (countries_name) VALUES ('Thailand');");
+        db.run("INSERT INTO countries (name) VALUES ('Japan');");
+        db.run("INSERT INTO countries (name) VALUES ('Korea');");
+        db.run("INSERT INTO countries (name) VALUES ('Thailand');");
 
         // Insert data ORDERS
-        db.run("INSERT INTO orders (orders_name, orders_price, orders_desc, products_id, users_id, countries_id, categories_id)" +
+        db.run("INSERT INTO orders (name, price, desc, products_id, users_id, countries_id, categories_id)" +
         "VALUES ('Kimono Groen', '600', 'Best there is!', 0, 0, 0, 0);");
-        db.run("INSERT INTO orders (orders_name, orders_price, orders_desc, products_id, users_id, countries_id, categories_id)" +
+        db.run("INSERT INTO orders (name, price, desc, products_id, users_id, countries_id, categories_id)" +
         "VALUES ('Homongi Blauw', '550', 'Best quality goods!', 0, 0, 0, 0);");
-        db.run("INSERT INTO orders (orders_name, orders_price, orders_desc, products_id, users_id, countries_id, categories_id)" +
+        db.run("INSERT INTO orders (name, price, desc, products_id, users_id, countries_id, categories_id)" +
         "VALUES ('Yukata Paars', '750', 'The best of the best!', 0, 0, 0, 0);");
 
         // Insert data PRODUCTS
-        db.run("INSERT INTO products (products_code, products_name, products_price, products_stock, products_desc, categories_id)" +
+        db.run("INSERT INTO products (code, name, price, stock, desc, categories_id)" +
         "VALUES ('LB-01', 'Kimono Groen', '600', 7, 'Een groene kimono', 0);");
-        db.run("INSERT INTO products (products_code, products_name, products_price, products_stock, products_desc, categories_id)" +
+        db.run("INSERT INTO products (code, name, price, stock, desc, categories_id)" +
         "VALUES ('LB-02', 'Homongi Blauw', '550', 9, 'Een blauwe homongi', 1);");
-        db.run("INSERT INTO products (products_code, products_name, products_price, products_stock, products_desc, categories_id)" +
+        db.run("INSERT INTO products (code, name, price, stock, desc, categories_id)" +
         "VALUES ('LB-03', 'Yukata Paars', '750', 2, 'Een paarse yukata', 0);");
 
         // Insert data USERS
-        db.run("INSERT INTO users (users_name, users_password, orders_id, countries_id)" +
+        db.run("INSERT INTO users (name, password, orders_id, countries_id)" +
         "VALUES ('Tessa', '" + HashPassword("1") + "', 0, 0);");
-        db.run("INSERT INTO users (users_name, users_password, orders_id, countries_id)" +
+        db.run("INSERT INTO users (name, password, orders_id, countries_id)" +
         "VALUES ('Philip', '" + HashPassword("1") + "', 0, 0);");
-        db.run("INSERT INTO users (users_name, users_password, orders_id, countries_id)" +
+        db.run("INSERT INTO users (name, password, orders_id, countries_id)" +
         "VALUES ('Mirjam', '" + HashPassword("2") + "', 0, 0);");
         
         

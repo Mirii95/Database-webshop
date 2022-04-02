@@ -77,19 +77,19 @@ router.post("/", function (req, res) {
 
 
     db.serialize(function() {
-        db.all("SELECT users_id, users_name, users_password FROM users WHERE users_name='" + username + "';",
+        db.all("SELECT id, name, password FROM users WHERE name='" + username + "';",
         function(err, rows) {
             let returnedUser = rows[0];
             console.log(returnedUser);
             
             succes = bcrypt.compareSync(
                 password,
-                returnedUser["users_password"]
+                returnedUser["password"]
             );
 
             const token = jwt.sign(
-                {users_id: returnedUser["users_id"]},
-                {users_name: returnedUser["users_name"]},
+                {id: returnedUser["id"]},
+                {name: returnedUser["name"]},
                 process.env.SECRET
             );
             res.status(200).json({ message: "Foute gegevens", password: password, username: username, succes: succes});

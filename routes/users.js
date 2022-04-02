@@ -8,13 +8,13 @@ const router = express.Router();
  *   Users:
  *    type: object
  *    required:
- *     - users_id
- *     - users_name
+ *     - id
+ *     - name
  *    properties:
- *     users_id:
+ *     id:
  *      type: integer
  *      description: De id van users.
- *     users_name:
+ *     name:
  *      type: string
  *      description: De naam van users.
  */
@@ -52,7 +52,7 @@ const router = express.Router();
   }
 
   db.all(
-    // "SELECT users_id, users_name FROM Users",
+    // "SELECT id, name FROM Users",
     "SELECT * FROM Users",
     function (err, rows) {
       results.push(rows);
@@ -97,7 +97,7 @@ router.get('/:id', function (req, res) {
   let db = database.GetDB();
   let results = [];
 
-  db.get("SELECT users_id, users_name FROM Users WHERE users_id=" + id + ";", function(err, rows) {
+  db.get("SELECT id, name FROM Users WHERE id=" + id + ";", function(err, rows) {
       results.push(rows);
       res.json(results);
   });
@@ -163,7 +163,7 @@ router.get("/:id/orders", function (req, res) {
   }
 
 db.all(
-    "SELECT * FROM Orders WHERE users_id=" + id + ";",
+    "SELECT * FROM Orders WHERE id=" + id + ";",
     function (err, rows) {
         results.push(rows);
         res.json(results);
@@ -177,7 +177,7 @@ router.get('/:id/orders', function (req, res) {
   // let db = database.GetDB();
   // let results = [];
 
-  // db.get("SELECT users_id, users_name FROM Users WHERE users_id=" + id + ";", function(err, rows) {
+  // db.get("SELECT id, name FROM Users WHERE id=" + id + ";", function(err, rows) {
   //     results.push(rows);
   //     res.json(results);
   // });
@@ -215,7 +215,7 @@ router.post('/', function (req, res) {
     return;
   }
 
-  db.run("INSERT INTO Users (users_name, orders_id, countries_id) VALUES ('" + NewName + "', 0, 0);");
+  db.run("INSERT INTO Users (name, orders_id, countries_id) VALUES ('" + NewName + "', 0, 0);");
 
   res.status(404).json({ message: "You try to add: " + NewName });
   db.close();
@@ -269,7 +269,7 @@ router.patch("/:id", function (req, res) {
   }
 
   let db = database.GetDB();
-  db.run("UPDATE Users SET users_name = '" + NewName + "' WHERE users_id = " + id + ";");
+  db.run("UPDATE Users SET name = '" + NewName + "' WHERE id = " + id + ";");
   res.status(200).json({ message: "Changed!" });
   db.close();
 });
@@ -298,7 +298,7 @@ router.delete("/:id", function (req, res) {
   const id = req.params.id;
   db = database.GetDB();
 
-  db.run("DELETE FROM Users WHERE users_id = " + id + ";");
+  db.run("DELETE FROM Users WHERE id = " + id + ";");
   res.status(200).json({ message: "Deleted!" });
   db.close();
 });

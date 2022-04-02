@@ -48,7 +48,7 @@ router.get("/", function (req, res) {
     // let results = [];
     let results = {categories: []};
   db.all(
-      "SELECT categories_id, categories_name FROM categories",
+      "SELECT id, name FROM categories",
       function (err, rows) {
           results["categories"] = rows;
           res.json(results);
@@ -91,7 +91,7 @@ router.get("/:id/products", function (req, res) {
     let db = database.GetDB();
     let results = [];
   db.all(
-      "SELECT * FROM Products WHERE categories_id=" + id + ";",
+      "SELECT * FROM Products WHERE id=" + id + ";",
       function (err, rows) {
           results.push(rows);
           res.json(results);
@@ -134,7 +134,7 @@ router.get("/:id", function (req, res) {
   let db = database.GetDB();
   let results = [];
 
-  db.get("SELECT categories_id, categories_name FROM categories WHERE categories_id=" + id + ";",
+  db.get("SELECT id, name FROM categories WHERE id=" + id + ";",
     function (err, rows) {
       results.push(rows);
       res.json(results);
@@ -184,7 +184,7 @@ router.post("/",  function (req, res) {
     }
 
     let db = database.GetDB();
-    db.run("INSERT INTO categories (categories_name, orders_id) VALUES ('" + NewName + "', 0);");
+    db.run("INSERT INTO categories (name, orders_id) VALUES ('" + NewName + "', 0);");
   
     res.status(200).json({ message: "success"});
     db.close();
@@ -225,7 +225,7 @@ router.patch("/:id", function (req, res) {
   let db = database.GetDB();
 
   if (!NewName) {
-    res.status(400).json({ message: "products_name was null or empty"});
+    res.status(400).json({ message: "name was null or empty"});
     return;
   }
 
@@ -239,7 +239,7 @@ router.patch("/:id", function (req, res) {
     return;
   }
   
-  db.run("UPDATE Categories SET categories_name = '" + NewName + "' WHERE categories_id = " + id + ";");
+  db.run("UPDATE Categories SET name = '" + NewName + "' WHERE id = " + id + ";");
   res.status(200).json({ message: "Changed!" });
   db.close();
 });
@@ -274,13 +274,13 @@ router.delete("/:id", function (req, res) {
   
   var results = [];
 
-  db.get("SELECT COUNT(products_id) AS NumberOfProducts FROM products WHERE products_id=" + id + ";",
+  db.get("SELECT COUNT(id) AS NumberOfProducts FROM products WHERE id=" + id + ";", // this could be wrong
     function (err, rows) {
       results.push(rows);
       if(results[0]["NumberOfProducts"]>0) {
         res.status(403).json({ message: "You can't delete categories when there are still products in there."});
       } else {
-        db.run("DELETE FROM Categories WHERE categories_id = " + id + ";");
+        db.run("DELETE FROM Categories WHERE id = " + id + ";");
         res.status(200).json({ message: "Success!" });
       }
     }

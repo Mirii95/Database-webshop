@@ -9,13 +9,13 @@ const router = express.Router();
  *   Countries:
  *    type: object
  *    required:
- *     - countries_id
- *     - countries_name
+ *     - id
+ *     - name
  *    properties:
- *     countries_id:
+ *     id:
  *      type: integer
  *      description: De id van de Country.
- *     countries_name:
+ *     name:
  *      type: string
  *      description: De naam van de Country.
  */
@@ -47,7 +47,7 @@ router.get("/", function (req, res) {
   let db = database.GetDB();
   let results = [];
   db.all(
-    "SELECT countries_id, countries_name FROM countries",
+    "SELECT id, name FROM countries",
     function (err, rows) {
       results.push(rows);
       res.json(results);
@@ -93,7 +93,7 @@ router.get("/:id", function (req, res) {
   let results = [];
 
   db.get(
-    "SELECT countries_id, countries_name FROM countries WHERE countries_id=" +
+    "SELECT id, name FROM countries WHERE id=" +
       id +
       ";",
     function (err, rows) {
@@ -138,11 +138,11 @@ router.post("/", function (req, res) {
   }
 
   if (!NewName) {
-    res.status(400).json({ message: "products_name was null or empty"});
+    res.status(400).json({ message: "name was null or empty"});
     return;
   }
 
-  db.run("INSERT INTO countries (countries_name) VALUES ('" + NewName + "');");
+  db.run("INSERT INTO countries (name) VALUES ('" + NewName + "');");
 
   res.status(404).json({ message: "You try to add: " + NewName });
   db.close();
@@ -194,7 +194,7 @@ router.patch("/:id", function (req, res) {
   }
 
   let db = database.GetDB();
-  db.run("UPDATE Countries SET countries_name = '" + NewName + "' WHERE countries_id = " + id + ";");
+  db.run("UPDATE Countries SET name = '" + NewName + "' WHERE id = " + id + ";");
   res.status(200).json({ message: "Changed!" });
   db.close();
 });
@@ -228,7 +228,7 @@ router.delete("/:id", function (req, res) {
     return;
   }
 
-  db.run("DELETE FROM Countries WHERE countries_id = " + id + ";");
+  db.run("DELETE FROM Countries WHERE id = " + id + ";");
   res.status(200).json({ message: "Deleted!" });
   db.close();
 });
