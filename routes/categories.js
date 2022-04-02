@@ -45,7 +45,6 @@ const router = express.Router();
 // GET ALLES
 router.get("/", function (req, res) {
     let db = database.GetDB();
-    // let results = [];
     let results = {categories: []};
   db.all(
       "SELECT id, name FROM categories",
@@ -89,11 +88,17 @@ router.get("/", function (req, res) {
 router.get("/:id/products", function (req, res) {
     const id = req.params.id;
     let db = database.GetDB();
-    let results = [];
+    let results = {products: []};
+
   db.all(
-      "SELECT * FROM Products WHERE id=" + id + ";",
+      "SELECT * FROM Products WHERE categories_id=" + id + ";",
       function (err, rows) {
-          results.push(rows);
+        results["products"] = rows;
+        console.info(rows);
+          for (let i = 0; i < results["products"].length; i++) {
+            results["products"][i]["price_vat"] = Math.round(results["products"][i]["price"] * 1.21);
+          }
+
           res.json(results);
   });
   db.close();
@@ -171,13 +176,13 @@ router.post("/",  function (req, res) {
       return;
     }
 
-    if (NewName.match(/^(\W{0,1})$/i)) {
+    if (NewName.length < 2) {
       res.status(403).json({ message: "Failed!" });
       return;
     }
-
-    if (NewName.match(/\d/)) {
-      res.status(403).json({ message: "Must contain text only, and be a minimum of 2 characters long" });
+    
+    if (!NewName.match(/^[a-z ]+$/i)) {
+      res.status(403).json({ message: "Must be text only!" });
       return;
     }
 

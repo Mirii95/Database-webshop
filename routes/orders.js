@@ -10,20 +10,21 @@ const router = express.Router();
  *    type: object
  *    required:
  *     - id
- *     - name
- *     - price
- *     - desc
+ *     - date
+ *     - paid
+ *     - shipped
+ *     - products_id
  *    properties:
  *     id:
  *      type: integer
  *      description: De id van de Order.
- *     name:
+ *     date:
  *      type: string
  *      description: De naam van de Order.
- *     price:
+ *     paid:
  *      type: integer
  *      description: De prijs van de Order.
- *     desc:
+ *     shipped:
  *      type: string
  *      description: De beschrijving van de Order.
  */
@@ -52,7 +53,7 @@ const router = express.Router();
 
 router.get('/', function (req, res) {
   let db = database.GetDB();
-  let results = [];
+  let results = {orders: []};
 
   if (!req.userAdmin){
     res.status(403).json({ message: "You are not authorised to get!"});
@@ -62,9 +63,8 @@ router.get('/', function (req, res) {
   db.all(
     "SELECT id, name, price, desc FROM Orders",
     function (err, rows) {
-      results.push(rows);
+      results["orders"] = rows;
       res.json(results);
-      console.log(results);
     }
   );
   db.close();
@@ -133,9 +133,9 @@ router.get('/:id', function (req, res) {
  *        $ref: '#/components/schemas/Orders'
  */
 router.post('/', function (req, res) {
-  const NewName = req.body.orders_name;
-  const NewPrice = req.body.orders_price;
-  const NewDesc = req.body.orders_desc;
+  const NewName = req.body.name;
+  const NewPrice = req.body.price;
+  const NewDesc = req.body.desc;
   let db = database.GetDB();
 
   if (!req.userTemp){
@@ -144,22 +144,22 @@ router.post('/', function (req, res) {
   }
 
   if (!NewName) {
-    res.status(400).json({ message: "products_name was null or empty"});
+    res.status(400).json({ message: "name was null or empty"});
     return;
   }
   if (!NewPrice && NewPrice != 0) {
-    res.status(400).json({ message: "products_price was null or empty"});
+    res.status(400).json({ message: "price was null or empty"});
     return;
   }
   if (!NewDesc) {
-    res.status(400).json({ message: "products_desc was null or empty"});
+    res.status(400).json({ message: "desc was null or empty"});
     return;
   }
 
   db.run("INSERT INTO Orders (name, price, desc, products_id, users_id, countries_id, categories_id)" +
   "VALUES ('" + NewName + "'," + NewPrice + ",'" + NewDesc + "', 0, 0, 0, 0);");
 
-  res.status(200).json({ message: "You try to add: " + NewName + NewPrice + NewDesc });
+  res.status(200).json({ message: "You try to add: " + NewName + ", " + NewPrice + ", " + NewDesc + ";" });
   db.close();
   });
 
@@ -193,9 +193,9 @@ router.post('/', function (req, res) {
  */
 
   router.patch('/:id', function (req, res) {
-    const NewName = req.body.orders_name;
-    const NewPrice = req.body.orders_price;
-    const NewDesc = req.body.orders_desc;
+    const NewName = req.body.name;
+    const NewPrice = req.body.price;
+    const NewDesc = req.body.desc;
     const id = req.params.id;
     // res.status(404).json({ message: "category does not exist" + NewName + " " + id });
 
@@ -205,15 +205,15 @@ router.post('/', function (req, res) {
     }
 
     if (!NewName) {
-      res.status(400).json({ message: "products_name was null or empty"});
+      res.status(400).json({ message: "name was null or empty"});
       return;
     }
     if (!NewPrice && NewPrice != 0) {
-      res.status(400).json({ message: "products_price was null or empty"});
+      res.status(400).json({ message: "price was null or empty"});
       return;
     }
     if (!NewDesc) {
-      res.status(400).json({ message: "products_desc was null or empty"});
+      res.status(400).json({ message: "desc was null or empty"});
       return;
     }
   

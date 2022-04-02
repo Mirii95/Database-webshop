@@ -46,21 +46,26 @@ CREATE TABLE "countries" (
 `;
 const TABLE_THREE = `
 CREATE TABLE "orders" (
-	"id"	INTEGER NOT NULL UNIQUE,
-	"name"	TEXT NOT NULL,
-	"price"	INTEGER NOT NULL,
-	"desc"	TEXT,
-	"products_id"	INTEGER NOT NULL,
-	"users_id"	INTEGER NOT NULL,
-	"countries_id"	INTEGER NOT NULL,
-	"categories_id"	INTEGER NOT NULL,
-	FOREIGN KEY("products_id") REFERENCES "products"("id"),
-	FOREIGN KEY("countries_id") REFERENCES "countries"("id"),
-	FOREIGN KEY("users_id") REFERENCES "users"("id"),
-	FOREIGN KEY("categories_id") REFERENCES "categories"("id"),
+	"id"	INTEGER UNIQUE,
+    "date"   TEXT,
+    "paid"   INTEGER,
+    "shipped"    INTEGER,
+    "products_id"   INTEGER,
+    FOREIGN KEY("products_id") REFERENCES "products"("id"),
 	PRIMARY KEY("id" AUTOINCREMENT)
-);
-`;
+    );
+    `;
+    
+    // FOREIGN KEY("order_lines_id") REFERENCES "order_lines"("id"),
+	// "products_id"	INTEGER NOT NULL,
+	// "users_id"	INTEGER NOT NULL,
+	// "countries_id"	INTEGER NOT NULL,
+	// "categories_id"	INTEGER NOT NULL,
+	// FOREIGN KEY("products_id") REFERENCES "products"("id"),
+	// FOREIGN KEY("countries_id") REFERENCES "countries"("id"),
+	// FOREIGN KEY("users_id") REFERENCES "users"("id"),
+	// FOREIGN KEY("categories_id") REFERENCES "categories"("id"),
+
 const TABLE_FOUR = `
 CREATE TABLE "products" (
 	"id"	INTEGER NOT NULL UNIQUE,
@@ -76,15 +81,23 @@ CREATE TABLE "products" (
 const TABLE_FIVE = `
 CREATE TABLE "users" (
 	"id"	INTEGER NOT NULL UNIQUE,
-	"name"	TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+	"firstname"	TEXT NOT NULL,
+    "infix" TEXT,
+    "lastname"    TEXT NOT NULL,
+    "city"  TEXT NOT NULL,
+    "zipcode"   TEXT NOT NULL,
+    "street"    TEXT NOT NULL,
+    "housenumber"   TEXT NOT NULL,
+    "newsletter"    INTEGER NOT NULL,
     "password"   VARCHAR(250) NOT NULL,
-	"orders_id"	INTEGER NOT NULL,
+    "userrole_id"   INTEGER NOT NULL,
 	"countries_id"	INTEGER NOT NULL,
+    FOREIGN KEY("userrole_id") REFERENCES "userrole"("id"),
 	FOREIGN KEY("countries_id") REFERENCES "countries"("id"),
-	FOREIGN KEY("orders_id") REFERENCES "orders"("id"),
 	PRIMARY KEY("id" AUTOINCREMENT)
-);
-`;
+    );
+    `;
 
 const TABLE_SIX = `
 CREATE TABLE "user_order_relations" (
@@ -114,6 +127,27 @@ CREATE TABLE "authentication" (
 );
 `;
 
+const TABLE_NINE = `
+CREATE TABLE "userrole" (
+    "id"    INTEGER NOT NULL UNIQUE,
+    "name"  TEXT NOT NULL,
+    PRIMARY KEY("id" AUTOINCREMENT)
+)
+`;
+
+const TABLE_TEN = `
+CREATE TABLE "order_lines" (
+    "id"    INTEGER NOT NULL UNIQUE,
+    "amount"    INTEGER NOT NULL,
+    "total-price"   INTEGER NOT NULL,
+    "orders_id" TEXT NOT NULL,
+    "products_id"   TEXT NOT NULL,
+    FOREIGN KEY("orders_id") REFERENCES "orders"("id"),
+    FOREIGN KEY("products_id") REFERENCES "products"("id"),
+    PRIMARY KEY("id" AUTOINCREMENT)
+)
+`;
+
 function CREATE_TABLES() {
     let db = GetDB();
     
@@ -129,6 +163,8 @@ function CREATE_TABLES() {
         db.run('DROP TABLE IF EXISTS "user_order_relations";');
         db.run('DROP TABLE IF EXISTS "product_order_relations";');
         db.run('DROP TABLE IF EXISTS "authentication";');
+        db.run('DROP TABLE IF EXISTS "userrole";');
+        db.run('DROP TABLE IF EXISTS "order_lines";');
 
         // Create tables
         db.run(TABLE_ONE);
@@ -139,6 +175,8 @@ function CREATE_TABLES() {
         db.run(TABLE_SIX);
         db.run(TABLE_SEVEN);
         // db.run(TABLE_EIGHT);
+        db.run(TABLE_NINE);
+        // db.run(TABLE_TEN);
 
         // Insert data CATEGORIES
         db.run("INSERT INTO categories (name)" +
@@ -156,12 +194,12 @@ function CREATE_TABLES() {
         db.run("INSERT INTO countries (name) VALUES ('Thailand');");
 
         // Insert data ORDERS
-        db.run("INSERT INTO orders (name, price, desc, products_id, users_id, countries_id, categories_id)" +
-        "VALUES ('Kimono Groen', '600', 'Best there is!', 0, 0, 0, 0);");
-        db.run("INSERT INTO orders (name, price, desc, products_id, users_id, countries_id, categories_id)" +
-        "VALUES ('Homongi Blauw', '550', 'Best quality goods!', 0, 0, 0, 0);");
-        db.run("INSERT INTO orders (name, price, desc, products_id, users_id, countries_id, categories_id)" +
-        "VALUES ('Yukata Paars', '750', 'The best of the best!', 0, 0, 0, 0);");
+        db.run("INSERT INTO orders (id, date, paid, shipped, products_id)" +
+        "VALUES (1, '09/02/2022', 1, 2, 0);");
+        db.run("INSERT INTO orders (id, date, paid, shipped, products_id)" +
+        "VALUES (2, '17/03/2022', 1, 1, 0);");
+        db.run("INSERT INTO orders (id, date, paid, shipped, products_id)" +
+        "VALUES (3, '22/01/2022', 1, 3, 0);");
 
         // Insert data PRODUCTS
         db.run("INSERT INTO products (code, title, price, stock, desc, categories_id)" +
@@ -172,14 +210,13 @@ function CREATE_TABLES() {
         "VALUES ('LB-03', 'Yukata Paars', '750', 2, 'Een paarse yukata', 0);");
 
         // Insert data USERS
-        db.run("INSERT INTO users (name, password, orders_id, countries_id)" +
-        "VALUES ('Tessa', '" + HashPassword("1") + "', 0, 0);");
-        db.run("INSERT INTO users (name, password, orders_id, countries_id)" +
-        "VALUES ('Philip', '" + HashPassword("1") + "', 0, 0);");
-        db.run("INSERT INTO users (name, password, orders_id, countries_id)" +
-        "VALUES ('Mirjam', '" + HashPassword("2") + "', 0, 0);");
-        
-        
+        db.run("INSERT INTO users (id, email, firstname, infix, lastname, city, zipcode, street, housenumber, newsletter, password, userrole_id, countries_id)" +
+        "VALUES (1, 'windesheim@student.nl', 'Mirjam', 'van der', 'Steen', 'Lelystad', '8219 AA', 'Oudaen', '37', 1, '" + HashPassword("1") + "', 1, 0);");
+        db.run("INSERT INTO users (id, email, firstname, infix, lastname, city, zipcode, street, housenumber, newsletter, password, userrole_id, countries_id)" +
+        "VALUES (2, 'windesheim@docent.nl', 'Philip', '', 'Thuijs', 'Almere', '1919 AB', 'Almerestraat', '2', 1, '" + HashPassword("1") + "', 2, 0);");
+        db.run("INSERT INTO users (id, email, firstname, infix, lastname, city, zipcode, street, housenumber, newsletter, password, userrole_id, countries_id)" +
+        "VALUES (3, 'windesheimzwolle@student.nl', 'Tessa', 'van der', 'Steen', 'Lelystad', '8219 AA', 'Oudaen', '37', 1,'" + HashPassword("2") + "', 3, 0);");
+
         // Insert data user_order_relations
         db.run("INSERT INTO user_order_relations (users_id, orders_id)" +
         "VALUES (0, 0);");
@@ -195,6 +232,14 @@ function CREATE_TABLES() {
         "VALUES (0, 0);");
         db.run("INSERT INTO product_order_relations (products_id, orders_id)" +
         "VALUES (0, 0);");
+        
+        // Insert data userrole
+        db.run("INSERT INTO userrole (id, name)" +
+        "VALUES (0, 0);");
+
+        // Insert data order_lines
+        // db.run("INSERT INTO order_lines (amount, total-price, id)" +
+        // "VALUES (0, 0, 0)");
     });
     db.close(); 
 }
@@ -210,6 +255,8 @@ function DELETE_TABLES() {
     db.run('DROP TABLE IF EXISTS "user_order_relation";');
     db.run('DROP TABLE IF EXISTS "product_order_relations";');
     db.run('DROP TABLE IF EXISTS "authentication";');
+    db.run('DROP TABLE IF EXISTS "userrole";');
+    // db.run('DROP TABLE IF EXISTS "order_lines";');
 
     db.close();
 }

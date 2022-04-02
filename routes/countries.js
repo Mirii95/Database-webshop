@@ -45,11 +45,11 @@ const router = express.Router();
 // GET ALLES
 router.get("/", function (req, res) {
   let db = database.GetDB();
-  let results = [];
+  let results = {countries: []};
   db.all(
     "SELECT id, name FROM countries",
     function (err, rows) {
-      results.push(rows);
+      results["countries"] = rows;
       res.json(results);
     }
   );
@@ -129,22 +129,32 @@ router.get("/:id", function (req, res) {
 
 // POST
 router.post("/", function (req, res) {
-  const NewName = req.body.countries_name;
-  let db = database.GetDB();
+  const NewName = req.body.name;
+  const REGEX = "^(\W{0,1})$";
 
   if (!req.userAdmin){
     res.status(403).json({ message: "You are not authorised to post!" });
     return;
   }
+  // if (!NewName) {
+  //   res.status(400).json({ message: "name was null or empty"});
+  //   return;
+  // }
 
-  if (!NewName) {
-    res.status(400).json({ message: "name was null or empty"});
+  if (NewName.length < 2) {
+    res.status(403).json({ message: "Failed!" });
+    return;
+  }
+  
+  if (!NewName.match(/^[a-z ]+$/i)) {
+    res.status(403).json({ message: "Must be text only!" });
     return;
   }
 
+  let db = database.GetDB();
   db.run("INSERT INTO countries (name) VALUES ('" + NewName + "');");
 
-  res.status(404).json({ message: "You try to add: " + NewName });
+  res.status(200).json({ message: "You try to add: " + NewName });
   db.close();
 });
 
@@ -179,22 +189,32 @@ router.post("/", function (req, res) {
 
 // PATCH
 router.patch("/:id", function (req, res) {
-  const NewName = req.body.countries_name;
+  const NewName = req.body.name;
   const id = req.params.id;
-  // res.status(404).json({ message: "category does not exist" + NewName + " " + id });
 
   if (!req.userAdmin){
     res.status(403).json({ message: "You are not authorised to patch!"});
     return;
   }
 
-  if (!NewName) {
-    res.status(400).json({ message: "products_name was null or empty"});
+  // if (!NewName) {
+  //   res.status(400).json({ message: "name was null or empty"});
+  //   return;
+  // }
+
+  if (NewName.length < 2) {
+    res.status(403).json({ message: "Failed!" });
+    return;
+  }
+  
+  if (!NewName.match(/^[a-z ]+$/i)) {
+    res.status(403).json({ message: "Must be text only!" });
     return;
   }
 
   let db = database.GetDB();
   db.run("UPDATE Countries SET name = '" + NewName + "' WHERE id = " + id + ";");
+
   res.status(200).json({ message: "Changed!" });
   db.close();
 });

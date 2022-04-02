@@ -81,7 +81,8 @@ router.get("/", function (req, res) {
     db.all(
       "SELECT id, title FROM Products WHERE title LIKE '%" + search + "%';",
       function (err, rows) {
-        results.push(rows);
+        results["products"] = rows;
+        // results.push(rows);
         res.json(results);
       }
     );

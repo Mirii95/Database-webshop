@@ -34,7 +34,7 @@ const jwt = require('jsonwebtoken');
  *   authentication:
  *    type: object
  *    required:
- *     - username
+ *     - email
  *     - password
  *    properties:
  *     username: 
@@ -67,32 +67,42 @@ const jwt = require('jsonwebtoken');
  *        $ref: '#/components/schemas/authentication'
  */
 router.post("/", function (req, res) {
-    let username = req.body.username;
     let password = req.body.password;
+    let email = req.body.email;
     let db = database.GetDB();
     username = "Tessa";
-    let results = [];
     let succes = false;
+    let results = [];
     
-
-
     db.serialize(function() {
-        db.all("SELECT id, name, password FROM users WHERE name='" + username + "';",
+        db.all("SELECT id, email, password FROM users WHERE email='" + email + "';",
         function(err, rows) {
-            let returnedUser = rows[0];
-            console.log(returnedUser);
-            
-            succes = bcrypt.compareSync(
-                password,
-                returnedUser["password"]
-            );
+            console.info(rows);
+            if (rows == undefined) {
+                res.status(401).json({ message: "Gebruikersnaam of wachtwoord komt niet overeen!"});
+            } else {
 
-            const token = jwt.sign(
-                {id: returnedUser["id"]},
-                {name: returnedUser["name"]},
-                process.env.SECRET
-            );
-            res.status(200).json({ message: "Foute gegevens", password: password, username: username, succes: succes});
+                let returnedUser = rows[0];
+                console.log(returnedUser);
+                
+                succes = bcrypt.compareSync(
+                    password,
+                    returnedUser["password"]
+                );
+
+                if (succes) {
+                    const token = jwt.sign(
+                        {id: returnedUser["id"]},
+                        {name: returnedUser["name"]},
+                        process.env.SECRET
+                    );
+                    res.status(200).json({ message: "Foute gegevens", password: password, username: username, succes: succes});
+
+                } else {
+                    res.status(401).json({ message: "Gebruikersnaam of wachtwoord komt niet overeen!"});
+                }
+    
+            }
         });           
     });
     db.close();
