@@ -21,7 +21,7 @@ const router = express.Router();
  *      type: string
  *      description: De naam van de Order.
  *     price:
- *      type: number
+ *      type: integer
  *      description: De prijs van de Order.
  *     desc:
  *      type: string

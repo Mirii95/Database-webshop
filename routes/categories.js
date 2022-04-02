@@ -132,12 +132,10 @@ router.get("/:id/products", function (req, res) {
 router.get("/:id", function (req, res) {
   const id = req.params.id;
   let db = database.GetDB();
-  let results = [];
 
   db.get("SELECT id, name FROM categories WHERE id=" + id + ";",
     function (err, rows) {
-      results.push(rows);
-      res.json(results);
+      res.json(rows);
     }
   );
   db.close();
@@ -223,7 +221,8 @@ router.patch("/:id", function (req, res) {
   const NewName = req.body.name;
   const id = req.params.id;
   let db = database.GetDB();
-
+  
+  
   if (!NewName) {
     res.status(400).json({ message: "name was null or empty"});
     return;
@@ -278,7 +277,7 @@ router.delete("/:id", function (req, res) {
     function (err, rows) {
       results.push(rows);
       if(results[0]["NumberOfProducts"]>0) {
-        res.status(403).json({ message: "You can't delete categories when there are still products in there."});
+        res.status(403).json({ message: "Succes!"});
       } else {
         db.run("DELETE FROM Categories WHERE id = " + id + ";");
         res.status(200).json({ message: "Success!" });

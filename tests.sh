@@ -67,8 +67,8 @@ curl -X 'POST' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "countries_id": 0,
-  "countries_name": "string"
+  "id": 0,
+  "name": "string"
 }'
 
 echo "\n"
@@ -84,8 +84,8 @@ curl -X 'PATCH' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "countries_id": 0,
-  "countries_name": "string"
+  "id": 0,
+  "name": "string"
 }'
 
 echo "\n"
@@ -107,10 +107,10 @@ curl -X 'POST' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "orders_id": 0,
-  "orders_name": "string",
-  "orders_price": 0,
-  "orders_desc": "string"
+  "id": 0,
+  "name": "string",
+  "price": 0,
+  "desc": "string"
 }'
 
 echo "\n"
@@ -126,10 +126,10 @@ curl -X 'PATCH' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "orders_id": 0,
-  "orders_name": "string",
-  "orders_price": 0,
-  "orders_desc": "string"
+  "id": 0,
+  "name": "string",
+  "price": 0,
+  "desc": "string"
 }'
 
 echo "\n"
@@ -151,10 +151,10 @@ curl -X 'POST' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "products_id": 0,
-  "products_name": "string",
-  "products_price": 0,
-  "products_desc": "string"
+  "id": 0,
+  "name": "string",
+  "price": 0,
+  "desc": "string"
 }'
 
 echo "\n"
@@ -170,10 +170,10 @@ curl -X 'PATCH' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "products_id": 0,
-  "products_name": "string",
-  "products_price": 0,
-  "products_desc": "string"
+  "id": 0,
+  "name": "string",
+  "price": 0,
+  "desc": "string"
 }'
 
 echo "\n"
@@ -195,8 +195,8 @@ curl -X 'POST' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "users_id": 0,
-  "users_name": "string"
+  "id": 0,
+  "name": "string"
 }'
 
 echo "\n"
@@ -212,8 +212,8 @@ curl -X 'PATCH' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "users_id": 0,
-  "users_name": "string"
+  "id": 0,
+  "name": "string"
 }'
 
 echo "\n"

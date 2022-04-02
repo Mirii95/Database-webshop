@@ -48,7 +48,7 @@ const TABLE_THREE = `
 CREATE TABLE "orders" (
 	"id"	INTEGER NOT NULL UNIQUE,
 	"name"	TEXT NOT NULL,
-	"price"	NUMERIC NOT NULL,
+	"price"	INTEGER NOT NULL,
 	"desc"	TEXT,
 	"products_id"	INTEGER NOT NULL,
 	"users_id"	INTEGER NOT NULL,
@@ -65,9 +65,9 @@ const TABLE_FOUR = `
 CREATE TABLE "products" (
 	"id"	INTEGER NOT NULL UNIQUE,
     "code" TEXT NOT NULL, 
-	"name"	TEXT NOT NULL,
-	"price"	NUMERIC NOT NULL,
-    "stock"    NUMERIC NOT NULL,
+	"title"	TEXT NOT NULL,
+	"price"	INTEGER NOT NULL,
+    "stock"    INTEGER NOT NULL,
 	"desc"	TEXT,
 	"categories_id"	INTEGER NOT NULL,
 	PRIMARY KEY("id" AUTOINCREMENT)
@@ -164,11 +164,11 @@ function CREATE_TABLES() {
         "VALUES ('Yukata Paars', '750', 'The best of the best!', 0, 0, 0, 0);");
 
         // Insert data PRODUCTS
-        db.run("INSERT INTO products (code, name, price, stock, desc, categories_id)" +
+        db.run("INSERT INTO products (code, title, price, stock, desc, categories_id)" +
         "VALUES ('LB-01', 'Kimono Groen', '600', 7, 'Een groene kimono', 0);");
-        db.run("INSERT INTO products (code, name, price, stock, desc, categories_id)" +
+        db.run("INSERT INTO products (code, title, price, stock, desc, categories_id)" +
         "VALUES ('LB-02', 'Homongi Blauw', '550', 9, 'Een blauwe homongi', 1);");
-        db.run("INSERT INTO products (code, name, price, stock, desc, categories_id)" +
+        db.run("INSERT INTO products (code, title, price, stock, desc, categories_id)" +
         "VALUES ('LB-03', 'Yukata Paars', '750', 2, 'Een paarse yukata', 0);");
 
         // Insert data USERS

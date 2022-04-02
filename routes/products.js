@@ -8,23 +8,35 @@ const router = express.Router();
  *   Products:
  *    type: object
  *    required:
+ *     - code
  *     - id
- *     - name
+ *     - title
+ *     - stock
  *     - price
  *     - desc
+ *     - categories_id
  *    properties:
+ *     code:
+ *      type: string
+ *      description: De code van de Product.
  *     id:
  *      type: integer
  *      description: De id van de Product.
- *     name:
+ *     title:
  *      type: string
  *      description: De naam van de Product.
+ *     stock:
+ *      type: integer
+ *      description: De stock van de Product.
  *     price:
- *      type: number
+ *      type: integer
  *      description: De prijs van de Product.
  *     desc:
  *      type: string
  *      description: De beschrijving van de Product.
+ *     categories_id:
+ *      type: integer
+ *      description: De categories_id van de Product.
  */
 
 /**
@@ -35,11 +47,11 @@ const router = express.Router();
  *   description: search query.
  *   parameters:
  *    - in: query
- *      name: q
+ *      name: id
  *      schema:
  *       type: string
  *      required: false
- *      description: name of the product
+ *      description: title of the product
  *   responses:
  *    200:
  *     description: Json met de products.
@@ -58,7 +70,7 @@ const router = express.Router();
 
 router.get("/", function (req, res) {
   const id = req.params.id;
-
+  
   const search = req.query.q;
   
   let db = database.GetDB();
@@ -67,7 +79,7 @@ router.get("/", function (req, res) {
   if (search != undefined) {
     // Do the other query
     db.all(
-      "SELECT id, name FROM Products WHERE name LIKE '%" + search + "%';",
+      "SELECT id, title FROM Products WHERE title LIKE '%" + search + "%';",
       function (err, rows) {
         results.push(rows);
         res.json(results);
@@ -75,14 +87,13 @@ router.get("/", function (req, res) {
     );
   } else {
     db.all(
-      // "SELECT products_id, products_name FROM Products",
+      // "SELECT products_id, products_title FROM Products",
       "SELECT * FROM Products",
       function (err, rows) {
         results["products"] = rows;
 
         for (let i = 0; i < results["products"].length; i++) {
-          results["products"][i]["price_vat"] = results["products"][i]["price"] * 1.21;
-          
+          results["products"][i]["price_vat"] = Math.round(results["products"][i]["price"] * 1.21);
         }
 
         res.json(results);
@@ -98,14 +109,14 @@ router.get("/", function (req, res) {
  * /api/products/{id}:
  *  get:
  *   tags: [Products]
- *   description: Haalt 1 Country op waaraan een Product gekoppeld kan zijn.
+ *   description: Haalt 1 Country op waaraan een Product gekoppeld kan zijn.2
  *   parameters:
  *    - in: path
  *      name: id
  *      schema:
  *       type: integer
  *      required: true
- *      description: products_id
+ *      description: id
  *   responses:
  *    200:
  *     description: Json met de products.
@@ -121,20 +132,22 @@ router.get("/", function (req, res) {
  *          items:
  *           $ref: '#/components/schemas/Products'
  */
+
 router.get("/:id", function (req, res) {
   const id = req.params.id;
   let db = database.GetDB();
-  let results = [];
-
+  let results = {};
+  
   db.get(
-    "SELECT id, name FROM Products WHERE id=" +
+    "SELECT * FROM Products WHERE id=" +
       id +
       ";",
-    function (err, rows) {
-      results.push(rows);
+    function (err, row) {
+      results = row;
+      results["price_vat"] = Math.round(results["price"] * 1.21);
       res.json(results);
     }
-  );
+  )
 
   db.close();
 });
@@ -162,17 +175,19 @@ router.get("/:id", function (req, res) {
  */
 
 router.post("/", function (req, res) {
-  const NewName = req.body.products_name;
-  const NewPrice = req.body.products_price;
-  const NewDesc = req.body.products_desc;
+  const NewTitle = req.body.title;
+  const NewPrice = req.body.price;
+  const NewDesc = req.body.desc;
+  const NewCode = req.body.code;
+  const NewStock = req.body.stock;
+  const REGEX = "^[A-Za-z0-9 \-]*$";
 
   if (!req.userAdmin){
     res.status(403).json({ message: "You are not authorised to post!" });
     return;
   }
-
-  if (!NewName) {
-    res.status(400).json({ message: "name was null or empty"});
+  if (!NewTitle) {
+    res.status(400).json({ message: "title was null or empty"});
     return;
   }
   if (!NewPrice && NewPrice != 0) {
@@ -183,14 +198,26 @@ router.post("/", function (req, res) {
     res.status(400).json({ message: "desc was null or empty"});
     return;
   }
+  if (!NewCode.match(/^[0-9A-Za-z\s\-]+$/)) {
+    res.status(400).json({ message: "Code must contain text, numbers, whitespace and dashes only." });
+    return;
+  }
+  if (!NewTitle.match(/^[0-9A-Za-z\s\-]+$/)) {
+    res.status(400).json({ message: "Title must contain text, numbers, whitespace and dashes only." });
+    return;
+  }
+    if (!NewDesc.match(/^[0-9A-Za-z\s\-]+$/)) {
+    res.status(400).json({ message: "Description must contain text, numbers, whitespace and dashes only." });
+    return;
+  }
 
-  let db = database.GetDB();
+let db = database.GetDB();
 
-  db.run("INSERT INTO Products (name, price, desc, categories_id)" +
-  "VALUES ('" + NewName + "', " + NewPrice + ", '" + NewDesc + "' ,0);");
+db.run("INSERT INTO Products (code, title, price, stock, desc, categories_id)" +
+"VALUES ('"+ NewCode +"', '" + NewTitle + "', " + NewPrice + ", " + NewStock + ", '" + NewDesc + "' ,0);");
   
-  db.close();
-  res.status(200).json({ message: "Succes!" });
+db.close();
+res.status(200).json({ message: "Succes!" });
 
 });
 
@@ -224,22 +251,32 @@ router.post("/", function (req, res) {
  */
 
 router.patch("/:id", function (req, res) {
-  const NewName = req.body.products_name;
   const id = req.params.id;
-  // res.status(404).json({ message: "category does not exist" + NewName + " " + id });
+  const NewCode = req.body.code;
+  const NewTitle = req.body.title;
+  const NewDesc = req.body.desc;
+  const REGEX = "^[A-Za-z0-9 \-]*$";
 
   if (!req.userAdmin){
     res.status(403).json({ message: "You are not authorised to patch!"});
     return;
   }
 
-  if (!NewName) {
-    res.status(400).json({ message: "name was null or empty"});
+  if (!NewCode.match(/^[0-9A-Za-z\s\-]+$/)) {
+    res.status(400).json({ message: "Code must contain text, numbers, whitespace and dashes only." });
     return;
   }
-
+  if (!NewTitle.match(/^[0-9A-Za-z\s\-]+$/)) {
+    res.status(400).json({ message: "Title must contain text, numbers, whitespace and dashes only." });
+    return;
+  }
+    if (!NewDesc.match(/^[0-9A-Za-z\s\-]+$/)) {
+    res.status(400).json({ message: "Description must contain text, numbers, whitespace and dashes only." });
+    return;
+  }
+  // TODO: Niet ingevulde gegevens moeten niet aangepast worden,
   let db = database.GetDB();
-  db.run("UPDATE Products SET name = '" + NewName + "' WHERE id = " + id + ";");
+  db.run("UPDATE Products SET code = '" + NewCode + "', title = '" + NewTitle + "', desc = '" + NewDesc + "' WHERE id = " + id + ";");
   res.status(200).json({ message: "Changed!" });
   db.close();
 });
