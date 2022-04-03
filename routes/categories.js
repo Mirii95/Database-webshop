@@ -187,7 +187,7 @@ router.post("/",  function (req, res) {
     }
 
     let db = database.GetDB();
-    db.run("INSERT INTO categories (name, orders_id) VALUES ('" + NewName + "', 0);");
+    db.run("INSERT INTO categories (name) VALUES ('" + NewName + "');");
   
     res.status(200).json({ message: "success"});
     db.close();

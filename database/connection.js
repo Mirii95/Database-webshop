@@ -33,7 +33,6 @@ const TABLE_ONE = `
 CREATE TABLE "categories" (
 	"id"	INTEGER NOT NULL UNIQUE,
 	"name"	TEXT NOT NULL,
-    "orders_id"	INTEGER,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
 `;
@@ -90,11 +89,7 @@ CREATE TABLE "users" (
     );
     `;
 
-const TABLE_EIGHT = `
-CREATE TABLE "authentication" (
-    "id"	INTEGER NOT NULL UNIQUE,
-);
-`;
+
 
 const TABLE_NINE = `
 CREATE TABLE "userrole" (
@@ -127,7 +122,6 @@ function CREATE_TABLES() {
         db.run('DROP TABLE IF EXISTS "orders";');
         db.run('DROP TABLE IF EXISTS "products";');
         db.run('DROP TABLE IF EXISTS "users";');
-        db.run('DROP TABLE IF EXISTS "authentication";');
         db.run('DROP TABLE IF EXISTS "userrole";');
         db.run('DROP TABLE IF EXISTS "order_lines";');
 
@@ -137,7 +131,6 @@ function CREATE_TABLES() {
         db.run(TABLE_THREE);
         db.run(TABLE_FOUR);
         db.run(TABLE_FIVE);
-        // db.run(TABLE_EIGHT);
         db.run(TABLE_NINE);
         db.run(TABLE_TEN);
 
@@ -207,7 +200,6 @@ function DELETE_TABLES() {
     db.run('DROP TABLE IF EXISTS "orders";');
     db.run('DROP TABLE IF EXISTS "products";');
     db.run('DROP TABLE IF EXISTS "users";');
-    db.run('DROP TABLE IF EXISTS "authentication";');
     db.run('DROP TABLE IF EXISTS "userrole";');
     db.run('DROP TABLE IF EXISTS "order_lines";');
 

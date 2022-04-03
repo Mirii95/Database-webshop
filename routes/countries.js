@@ -154,7 +154,7 @@ router.post("/", function (req, res) {
   let db = database.GetDB();
   db.run("INSERT INTO countries (name) VALUES ('" + NewName + "');");
 
-  res.status(200).json({ message: "You try to add: " + NewName });
+  res.status(200).json({ message: "Succes!"});
   db.close();
 });
 
