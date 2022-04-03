@@ -34,7 +34,7 @@ const jwt = require('jsonwebtoken');
  *   authentication:
  *    type: object
  *    required:
- *     - email
+ *     - username
  *     - password
  *    properties:
  *     username: 
@@ -68,22 +68,21 @@ const jwt = require('jsonwebtoken');
  */
 router.post("/", function (req, res) {
     let password = req.body.password;
-    let email = req.body.email;
+    let email = req.body.username;
     let db = database.GetDB();
-    username = "Tessa";
+    
     let succes = false;
     let results = [];
     
     db.serialize(function() {
         db.all("SELECT id, email, password FROM users WHERE email='" + email + "';",
         function(err, rows) {
-            console.info(rows);
-            if (rows == undefined) {
+
+            if (rows == undefined || rows.length == 0) {
                 res.status(401).json({ message: "Gebruikersnaam of wachtwoord komt niet overeen!"});
             } else {
 
                 let returnedUser = rows[0];
-                console.log(returnedUser);
                 
                 succes = bcrypt.compareSync(
                     password,
@@ -92,11 +91,13 @@ router.post("/", function (req, res) {
 
                 if (succes) {
                     const token = jwt.sign(
-                        {id: returnedUser["id"]},
-                        {name: returnedUser["name"]},
+                        {
+                            id: returnedUser["id"], 
+                            name: returnedUser["name"]
+                        },
                         process.env.SECRET
                     );
-                    res.status(200).json({ message: "Foute gegevens", password: password, username: username, succes: succes});
+                    res.status(200).json({ access_token: token});
 
                 } else {
                     res.status(401).json({ message: "Gebruikersnaam of wachtwoord komt niet overeen!"});
@@ -120,15 +121,8 @@ router.post("/", function (req, res) {
     //   );
 
     // 
-
     
-    let users_password = '$2b$10$JG042weQ3Hy5AFCz8MLREOak5ZtVPM9tZC8Zt8r/I9oHvayTSUMru';
-    
-
-    
-    
-
-
+    // let users_password = '$2b$10$JG042weQ3Hy5AFCz8MLREOak5ZtVPM9tZC8Zt8r/I9oHvayTSUMru';
     // db.close();
     
 

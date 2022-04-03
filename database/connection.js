@@ -13,9 +13,10 @@ function GetDB() {
 
 function TEST() {
     let db = GetDB();
+    
     db.serialize(function() {
         db.run("CREATE TABLE lorem (info TEXT)");
-      
+        
         var stmt = db.prepare("INSERT INTO lorem VALUES (?)");
         for (var i = 0; i < 10; i++) {
             stmt.run("Ipsum " + i);
@@ -50,21 +51,11 @@ CREATE TABLE "orders" (
     "date"   TEXT,
     "paid"   INTEGER,
     "shipped"    INTEGER,
-    "products_id"   INTEGER,
-    FOREIGN KEY("products_id") REFERENCES "products"("id"),
+	"users_id"	INTEGER NOT NULL,
+	FOREIGN KEY("users_id") REFERENCES "users"("id"),
 	PRIMARY KEY("id" AUTOINCREMENT)
     );
     `;
-    
-    // FOREIGN KEY("order_lines_id") REFERENCES "order_lines"("id"),
-	// "products_id"	INTEGER NOT NULL,
-	// "users_id"	INTEGER NOT NULL,
-	// "countries_id"	INTEGER NOT NULL,
-	// "categories_id"	INTEGER NOT NULL,
-	// FOREIGN KEY("products_id") REFERENCES "products"("id"),
-	// FOREIGN KEY("countries_id") REFERENCES "countries"("id"),
-	// FOREIGN KEY("users_id") REFERENCES "users"("id"),
-	// FOREIGN KEY("categories_id") REFERENCES "categories"("id"),
 
 const TABLE_FOUR = `
 CREATE TABLE "products" (
@@ -99,28 +90,6 @@ CREATE TABLE "users" (
     );
     `;
 
-const TABLE_SIX = `
-CREATE TABLE "user_order_relations" (
-    "id"	INTEGER NOT NULL UNIQUE,
-    "users_id"	INTEGER NOT NULL,
-    "orders_id"	INTEGER NOT NULL,
-    FOREIGN KEY("users_id") REFERENCES "users"("id"),
-    FOREIGN KEY("orders_id") REFERENCES "orders"("id"),
-    PRIMARY KEY("id" AUTOINCREMENT)
-);
-`;
-
-const TABLE_SEVEN = `
-CREATE TABLE "product_order_relations" (
-    "id"	INTEGER NOT NULL UNIQUE,
-    "products_id"	INTEGER NOT NULL,
-    "orders_id"	INTEGER NOT NULL,
-    FOREIGN KEY("products_id") REFERENCES "products"("id"),
-    FOREIGN KEY("orders_id") REFERENCES "orders"("id"),
-    PRIMARY KEY("id" AUTOINCREMENT)
-);
-`;
-
 const TABLE_EIGHT = `
 CREATE TABLE "authentication" (
     "id"	INTEGER NOT NULL UNIQUE,
@@ -139,7 +108,7 @@ const TABLE_TEN = `
 CREATE TABLE "order_lines" (
     "id"    INTEGER NOT NULL UNIQUE,
     "amount"    INTEGER NOT NULL,
-    "total-price"   INTEGER NOT NULL,
+    "aankoop_price"   INTEGER NOT NULL,
     "orders_id" TEXT NOT NULL,
     "products_id"   TEXT NOT NULL,
     FOREIGN KEY("orders_id") REFERENCES "orders"("id"),
@@ -150,8 +119,6 @@ CREATE TABLE "order_lines" (
 
 function CREATE_TABLES() {
     let db = GetDB();
-    
-    // TODO: Deze delete functions blijken nog niet te werken. FIX HET. 
 
     db.serialize(function() {
         // Drop tables if they exist
@@ -160,8 +127,6 @@ function CREATE_TABLES() {
         db.run('DROP TABLE IF EXISTS "orders";');
         db.run('DROP TABLE IF EXISTS "products";');
         db.run('DROP TABLE IF EXISTS "users";');
-        db.run('DROP TABLE IF EXISTS "user_order_relations";');
-        db.run('DROP TABLE IF EXISTS "product_order_relations";');
         db.run('DROP TABLE IF EXISTS "authentication";');
         db.run('DROP TABLE IF EXISTS "userrole";');
         db.run('DROP TABLE IF EXISTS "order_lines";');
@@ -172,11 +137,9 @@ function CREATE_TABLES() {
         db.run(TABLE_THREE);
         db.run(TABLE_FOUR);
         db.run(TABLE_FIVE);
-        db.run(TABLE_SIX);
-        db.run(TABLE_SEVEN);
         // db.run(TABLE_EIGHT);
         db.run(TABLE_NINE);
-        // db.run(TABLE_TEN);
+        db.run(TABLE_TEN);
 
         // Insert data CATEGORIES
         db.run("INSERT INTO categories (name)" +
@@ -194,13 +157,13 @@ function CREATE_TABLES() {
         db.run("INSERT INTO countries (name) VALUES ('Thailand');");
 
         // Insert data ORDERS
-        db.run("INSERT INTO orders (id, date, paid, shipped, products_id)" +
-        "VALUES (1, '09/02/2022', 1, 2, 0);");
-        db.run("INSERT INTO orders (id, date, paid, shipped, products_id)" +
-        "VALUES (2, '17/03/2022', 1, 1, 0);");
-        db.run("INSERT INTO orders (id, date, paid, shipped, products_id)" +
-        "VALUES (3, '22/01/2022', 1, 3, 0);");
-
+        db.run("INSERT INTO orders (id, date, paid, shipped, users_id)" +
+        "VALUES (1, '09/02/2022', 1, 0, 1);");
+        db.run("INSERT INTO orders (id, date, paid, shipped, users_id)" +
+        "VALUES (2, '10/02/2022', 0, 0, 1);");
+        db.run("INSERT INTO orders (id, date, paid, shipped, users_id)" +
+        "VALUES (3, '10/02/2022', 0, 0, 2);");
+     
         // Insert data PRODUCTS
         db.run("INSERT INTO products (code, title, price, stock, desc, categories_id)" +
         "VALUES ('LB-01', 'Kimono Groen', '600', 7, 'Een groene kimono', 0);");
@@ -217,46 +180,36 @@ function CREATE_TABLES() {
         db.run("INSERT INTO users (id, email, firstname, infix, lastname, city, zipcode, street, housenumber, newsletter, password, userrole_id, countries_id)" +
         "VALUES (3, 'windesheimzwolle@student.nl', 'Tessa', 'van der', 'Steen', 'Lelystad', '8219 AA', 'Oudaen', '37', 1,'" + HashPassword("2") + "', 3, 0);");
 
-        // Insert data user_order_relations
-        db.run("INSERT INTO user_order_relations (users_id, orders_id)" +
-        "VALUES (0, 0);");
-        db.run("INSERT INTO user_order_relations (users_id, orders_id)" +
-        "VALUES (0, 0);");
-        db.run("INSERT INTO user_order_relations (users_id, orders_id)" +
-        "VALUES (0, 0);");
 
-        // Insert data product_order_relations
-        db.run("INSERT INTO product_order_relations (products_id, orders_id)" +
-        "VALUES (0, 0);");
-        db.run("INSERT INTO product_order_relations (products_id, orders_id)" +
-        "VALUES (0, 0);");
-        db.run("INSERT INTO product_order_relations (products_id, orders_id)" +
-        "VALUES (0, 0);");
-        
-        // Insert data userrole
+        // Insert data userrole 
         db.run("INSERT INTO userrole (id, name)" +
         "VALUES (0, 0);");
 
         // Insert data order_lines
-        // db.run("INSERT INTO order_lines (amount, total-price, id)" +
-        // "VALUES (0, 0, 0)");
-    });
+        db.run("INSERT INTO order_lines (amount, aankoop_price, orders_id, products_id)" +
+        "VALUES (2, 600, 1, 1)");
+        db.run("INSERT INTO order_lines (amount, aankoop_price, orders_id, products_id)" +
+        "VALUES (3, 750, 1, 3)");
+        db.run("INSERT INTO order_lines (amount, aankoop_price, orders_id, products_id)" +
+        "VALUES (1, 550, 2, 2)");
+        db.run("INSERT INTO order_lines (amount, aankoop_price, orders_id, products_id)" +
+        "VALUES (1, 550, 3, 2)");
+
+    }); 
     db.close(); 
 }
 
 function DELETE_TABLES() {
     let db = GetDB();
-
+ 
     db.run('DROP TABLE IF EXISTS "categories";');
     db.run('DROP TABLE IF EXISTS "countries";');
     db.run('DROP TABLE IF EXISTS "orders";');
     db.run('DROP TABLE IF EXISTS "products";');
     db.run('DROP TABLE IF EXISTS "users";');
-    db.run('DROP TABLE IF EXISTS "user_order_relation";');
-    db.run('DROP TABLE IF EXISTS "product_order_relations";');
     db.run('DROP TABLE IF EXISTS "authentication";');
     db.run('DROP TABLE IF EXISTS "userrole";');
-    // db.run('DROP TABLE IF EXISTS "order_lines";');
+    db.run('DROP TABLE IF EXISTS "order_lines";');
 
     db.close();
 }

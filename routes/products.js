@@ -47,7 +47,7 @@ const router = express.Router();
  *   description: search query.
  *   parameters:
  *    - in: query
- *      name: id
+ *      name: search
  *      schema:
  *       type: string
  *      required: false
@@ -69,9 +69,9 @@ const router = express.Router();
  */
 
 router.get("/", function (req, res) {
-  const id = req.params.id;
+
   
-  const search = req.query.q;
+  const search = req.query.search;
   
   let db = database.GetDB();
   let results = {products: []};

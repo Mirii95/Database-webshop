@@ -6,13 +6,13 @@ var router = express.Router();
 // Authorization: Bearer TokenString64bits
 
 router.use(function (req, res, next) {
-    console.log('Time:', Date.now()); 
+    // console.log('Time:', Date.now()); 
     next();
   });
 
 let TimeTester = function (req, res, next) {
-    console.log('Time:', Date.now());
-    console.log(req.headers);
+    // console.log('Time:', Date.now());
+    // console.log(req.headers);
     next();
 };
 
